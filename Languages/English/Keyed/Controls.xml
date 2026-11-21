@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <FPV_UI_ChooseDrone>Select drone</FPV_UI_ChooseDrone>
+  <FPV_UI_ChooseDroneDesc>Jump to this operator’s drone.</FPV_UI_ChooseDroneDesc>
+  <FPV_UI_Launch>Launch {0} #{1} ({2})</FPV_UI_Launch>
+  <FPV_UI_LaunchDesc>Choose the operator’s cell. Right-click to set the route or Shift-right-click to append a waypoint.</FPV_UI_LaunchDesc>
+  <FPV_UI_Empty>The battery is empty.</FPV_UI_Empty>
+  <FPV_UI_Reacquire>Take control</FPV_UI_Reacquire>
+  <FPV_UI_ReacquireDesc>Resume manual control with the original operator.</FPV_UI_ReacquireDesc>
+  <FPV_UI_Return>Return</FPV_UI_Return>
+  <FPV_UI_ReturnDesc>Fly to a landing cell beside the operator.</FPV_UI_ReturnDesc>
+  <FPV_UI_Land>Land here</FPV_UI_Land>
+  <FPV_UI_LandDesc>Land the scout and preserve its remaining charge.</FPV_UI_LandDesc>
+  <FPV_UI_End>End flight and detonate</FPV_UI_End>
+  <FPV_UI_EndDesc>The outline shows the main blast. Fragments can travel farther.</FPV_UI_EndDesc>
+  <FPV_UI_ChargeLine>Charge: {0} · {1} s</FPV_UI_ChargeLine>
+  <FPV_UI_Auto>Returning automatically</FPV_UI_Auto>
+  <FPV_UI_Manual>Manual control · right-click for route, Shift-right-click to append</FPV_UI_Manual>
+  <FPV_UI_OperatorLine>Operator: {0}</FPV_UI_OperatorLine>
+  <FPV_UI_Seconds>{0} s</FPV_UI_Seconds>
+  <FPV_UI_PickUp>Pick up for FPV kit: {0}</FPV_UI_PickUp>
+  <FPV_UI_UnreachableItem>unreachable</FPV_UI_UnreachableItem>
+  <FPV_UI_HeavyItem>too heavy</FPV_UI_HeavyItem>
+</LanguageData>

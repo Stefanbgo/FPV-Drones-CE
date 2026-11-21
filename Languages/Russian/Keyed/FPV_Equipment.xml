@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_BatteryCharge>Заряд {0}</FPV_BatteryCharge>
+  <FPV_ChargerReady>Дрон полностью заряжен.</FPV_ChargerReady>
+  <FPV_ChargerCharging>Дрон заряжается.</FPV_ChargerCharging>
+  <FPV_ChargerWaiting>Ожидание питания.</FPV_ChargerWaiting>
+</LanguageData>

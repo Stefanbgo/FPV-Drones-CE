@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AnimationDef>
+    <defName>FPV_SeatedPilot</defName>
+    <durationTicks>12</durationTicks>
+    <loopMode>Clamp</loopMode>
+    <keyframeParts>
+      <li>
+        <key>Body</key>
+        <value>
+          <keyframes>
+            <li><tick>0</tick></li>
+            <li><tick>12</tick><scale>(1.08,1,0.78)</scale><offset>(0,0,-0.06)</offset></li>
+          </keyframes>
+        </value>
+      </li>
+      <li>
+        <key>Head</key>
+        <value>
+          <keyframes>
+            <li><tick>0</tick></li>
+            <li><tick>12</tick><offset>(0,0,-0.14)</offset></li>
+          </keyframes>
+        </value>
+      </li>
+    </keyframeParts>
+  </AnimationDef>
+</Defs>

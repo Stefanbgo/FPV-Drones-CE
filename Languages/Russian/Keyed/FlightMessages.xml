@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <FPV_ReturnWarning>Пора возвращаться</FPV_ReturnWarning>
+    <FPV_ReturnLandedEarly>Мавик сел вне точки возврата</FPV_ReturnLandedEarly>
+    <FPV_ReturnNoCharge>Дрон не может долететь до места посадки рядом с оператором на оставшемся заряде.</FPV_ReturnNoCharge>
+    <FPV_ReacquireNoPilot>Исходный оператор недоступен на этой карте.</FPV_ReacquireNoPilot>
+    <FPV_ReacquireNoKit>Оператору нужны FPV-очки и пульт.</FPV_ReacquireNoKit>
+    <FPV_ReacquireOutOfRange>Дрон дальше 120 клеток от оператора.</FPV_ReacquireOutOfRange>
+    <FPV_ReacquireBusy>Оператор сейчас не может перехватить управление.</FPV_ReacquireBusy>
+    <FPV_Unreachable>Выбери свободную клетку в радиусе оператора.</FPV_Unreachable>
+</LanguageData>

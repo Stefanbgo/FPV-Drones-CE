@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>FPVDrones</AssemblyName>
+    <RimWorldDir Condition="'$(RimWorldDir)'==''">C:/Program Files (x86)/Steam/steamapps/common/RimWorld</RimWorldDir>
+    <WorkshopDir Condition="'$(WorkshopDir)'==''">$(RimWorldDir)/../../workshop/content/294100</WorkshopDir>
+    <OutputPath>../Assemblies/</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp" HintPath="$(RimWorldDir)/Assembly-CSharp.dll" Private="false"/>
+    <Reference Include="UnityStubs" HintPath="$(RimWorldDir)/UnityStubs.dll" Private="false"/>
+    <Reference Include="Waylith.UnityCompat" HintPath="$(RimWorldDir)/Waylith.UnityCompat.dll" Private="false"/>
+    <Reference Include="0Harmony" HintPath="$(WorkshopDir)/2009463077/1.7/Assemblies/0Harmony.dll" Private="false"/>
+    <Reference Include="CombatExtended" HintPath="$(WorkshopDir)/2890901044/Assemblies/CombatExtended.dll" Private="false"/>
+  </ItemGroup>
+</Project>

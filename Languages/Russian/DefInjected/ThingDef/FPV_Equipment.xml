@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_Kamikaze.label>FPV-камикадзе</FPV_Kamikaze.label>
+  <FPV_Kamikaze.description>Одноразовый FPV-дрон. Взрывается при завершении полёта.</FPV_Kamikaze.description>
+  <FPV_Scout.label>«Мавик»</FPV_Scout.label>
+  <FPV_Scout.description>Многоразовый дрон-разведчик. После посадки его аккумулятор можно зарядить на FPV-станции.</FPV_Scout.description>
+  <FPV_Goggles.label>FPV-очки</FPV_Goggles.label>
+  <FPV_Goggles.description>Многоразовые очки оператора для просмотра полёта.</FPV_Goggles.description>
+  <FPV_Controller.label>пульт FPV</FPV_Controller.label>
+  <FPV_Controller.description>Переносной многоразовый пульт для управления FPV-дронами.</FPV_Controller.description>
+  <FPV_Charger.label>зарядная станция FPV</FPV_Charger.label>
+  <FPV_Charger.description>Станция от электросети для зарядки одного «Мавика». Если забрать дрон раньше, набранный заряд сохраняется.</FPV_Charger.description>
+  <FPV_KamikazeAir.label>FPV-камикадзе</FPV_KamikazeAir.label>
+  <FPV_KamikazeAir.description>FPV-камикадзе в полёте.</FPV_KamikazeAir.description>
+  <FPV_ScoutAir.label>«Мавик»</FPV_ScoutAir.label>
+  <FPV_ScoutAir.description>«Мавик» в полёте.</FPV_ScoutAir.description>
+</LanguageData>

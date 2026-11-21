@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+    <FPV_ReturnWarning>Time to return</FPV_ReturnWarning>
+    <FPV_ReturnLandedEarly>Mavic landed outside the return point</FPV_ReturnLandedEarly>
+    <FPV_ReturnNoCharge>The drone cannot reach a landing cell near the operator with the remaining charge.</FPV_ReturnNoCharge>
+    <FPV_ReacquireNoPilot>The original operator is unavailable on this map.</FPV_ReacquireNoPilot>
+    <FPV_ReacquireNoKit>The operator needs the FPV goggles and controller.</FPV_ReacquireNoKit>
+    <FPV_ReacquireOutOfRange>The operator is more than 120 cells from the drone.</FPV_ReacquireOutOfRange>
+    <FPV_ReacquireBusy>The operator cannot retake control right now.</FPV_ReacquireBusy>
+    <FPV_Unreachable>Select a free cell within the operator's range.</FPV_Unreachable>
+</LanguageData>

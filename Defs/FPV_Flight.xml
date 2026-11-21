@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThinkTreeDef>
+    <defName>FPV_AirborneIdle</defName>
+    <thinkRoot Class="ThinkNode_Priority" />
+  </ThinkTreeDef>
+
+  <ThingDef Name="FPV_AirframeBase" ParentName="BasePawn" Abstract="True">
+    <thingClass>FPVDrones.FlyingDrone</thingClass>
+    <tradeability>None</tradeability>
+    <soundImpactDefault>BulletImpact_Metal</soundImpactDefault>
+    <butcherProducts><Steel>1</Steel></butcherProducts>
+    <modExtensions>
+      <li Class="CombatExtended.RacePropertiesExtensionCE">
+        <bodyShape>Plane</bodyShape>
+        <overrideFactors>true</overrideFactors>
+        <horiScale>0.32</horiScale>
+        <vertScale>0.24</vertScale>
+      </li>
+    </modExtensions>
+    <inspectorTabs Inherit="False" />
+    <drawGUIOverlay>true</drawGUIOverlay>
+    <statBases>
+      <MarketValue>5</MarketValue>
+      <Mass>2</Mass>
+      <PsychicSensitivity>0</PsychicSensitivity>
+      <MeatAmount>0</MeatAmount>
+      <LeatherAmount>0</LeatherAmount>
+      <Flammability>0.3</Flammability>
+      <ComfyTemperatureMin>-90</ComfyTemperatureMin>
+      <ComfyTemperatureMax>90</ComfyTemperatureMax>
+    </statBases>
+    <race>
+      <renderTree>Animal</renderTree>
+      <intelligence>ToolUser</intelligence>
+      <fleshType>Mechanoid</fleshType>
+      <body>MechanicalCentipede</body>
+      <baseBodySize>0.12</baseBodySize>
+      <baseHealthScale>0.15</baseHealthScale>
+      <needsRest>false</needsRest>
+      <hasGenders>false</hasGenders>
+      <foodType>None</foodType>
+      <lifeExpectancy>2500</lifeExpectancy>
+      <trainability>None</trainability>
+      <thinkTreeMain>FPV_AirborneIdle</thinkTreeMain>
+      <thinkTreeConstant>FPV_AirborneIdle</thinkTreeConstant>
+      <neverIncludeInQuests>true</neverIncludeInQuests>
+      <lifeStageAges><li><def>MechanoidFullyFormed</def><minAge>0</minAge></li></lifeStageAges>
+    </race>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_AirframeBase">
+    <defName>FPV_KamikazeAir</defName>
+    <label>FPV kamikaze</label>
+    <description>A kamikaze drone in flight.</description>
+    <statBases><MoveSpeed>5</MoveSpeed></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_AirframeBase">
+    <defName>FPV_ScoutAir</defName>
+    <label>Mavik scout drone</label>
+    <description>A Mavik scout drone in flight.</description>
+    <statBases><MoveSpeed>4</MoveSpeed></statBases>
+  </ThingDef>
+
+  <PawnKindDef>
+    <defName>FPV_KamikazeAir</defName>
+    <label>FPV kamikaze</label>
+    <race>FPV_KamikazeAir</race>
+    <combatPower>20</combatPower>
+    <canStrip>false</canStrip>
+    <lifeStages>
+      <li><bodyGraphicData><texPath>FPVDrones/KamikazeAir</texPath><drawSize>(0.9,0.9)</drawSize></bodyGraphicData></li>
+    </lifeStages>
+  </PawnKindDef>
+
+  <PawnKindDef>
+    <defName>FPV_ScoutAir</defName>
+    <label>Mavik scout drone</label>
+    <race>FPV_ScoutAir</race>
+    <combatPower>15</combatPower>
+    <canStrip>false</canStrip>
+    <lifeStages>
+      <li><bodyGraphicData><texPath>FPVDrones/ScoutAir</texPath><drawSize>(0.9,0.9)</drawSize></bodyGraphicData></li>
+    </lifeStages>
+  </PawnKindDef>
+
+  <JobDef>
+    <defName>FPV_Pilot</defName>
+    <driverClass>FPVDrones.JobDriver_Pilot</driverClass>
+    <reportString>piloting an FPV drone.</reportString>
+    <playerInterruptible>true</playerInterruptible>
+    <checkOverrideOnDamage>OnlyIfInstigatorNotJobTarget</checkOverrideOnDamage>
+  </JobDef>
+</Defs>
+

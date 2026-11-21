@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<LanguageData>
+  <FPV_UI_ChooseDrone>Выбрать дрон</FPV_UI_ChooseDrone>
+  <FPV_UI_ChooseDroneDesc>Перейти к аппарату этого оператора.</FPV_UI_ChooseDroneDesc>
+  <FPV_UI_Launch>Запустить {0} #{1} ({2})</FPV_UI_Launch>
+  <FPV_UI_LaunchDesc>Выберите клетку оператора. ПКМ задаёт маршрут, Shift + ПКМ добавляет точку.</FPV_UI_LaunchDesc>
+  <FPV_UI_Empty>Аккумулятор разряжен.</FPV_UI_Empty>
+  <FPV_UI_Reacquire>Снова управлять</FPV_UI_Reacquire>
+  <FPV_UI_ReacquireDesc>Вернуть ручное управление исходному оператору.</FPV_UI_ReacquireDesc>
+  <FPV_UI_Return>Вернуться</FPV_UI_Return>
+  <FPV_UI_ReturnDesc>Лететь к клетке рядом с оператором.</FPV_UI_ReturnDesc>
+  <FPV_UI_Land>Сесть здесь</FPV_UI_Land>
+  <FPV_UI_LandDesc>Посадить разведчик с оставшимся зарядом.</FPV_UI_LandDesc>
+  <FPV_UI_End>Завершить полёт с подрывом</FPV_UI_End>
+  <FPV_UI_EndDesc>Подсветка показывает основной взрыв. Осколки могут долететь дальше.</FPV_UI_EndDesc>
+  <FPV_UI_ChargeLine>Заряд: {0} · {1} с</FPV_UI_ChargeLine>
+  <FPV_UI_Auto>Автовозврат</FPV_UI_Auto>
+  <FPV_UI_Manual>Ручное управление · ПКМ — маршрут, Shift + ПКМ — добавить точку</FPV_UI_Manual>
+  <FPV_UI_OperatorLine>Оператор: {0}</FPV_UI_OperatorLine>
+  <FPV_UI_Seconds>{0} с</FPV_UI_Seconds>
+  <FPV_UI_PickUp>Взять в комплект FPV: {0}</FPV_UI_PickUp>
+  <FPV_UI_UnreachableItem>недоступно</FPV_UI_UnreachableItem>
+  <FPV_UI_HeavyItem>слишком тяжело</FPV_UI_HeavyItem>
+</LanguageData>

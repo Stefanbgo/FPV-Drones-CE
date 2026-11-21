@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>FPV Drones for Combat Extended</name>
+  <author>FPV Drones contributors</author>
+  <packageId>stef.fpvdrones</packageId>
+  <modVersion>1.0.0</modVersion>
+  <supportedVersions><li>1.7</li></supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+    </li>
+    <li>
+      <packageId>ceteam.combatextended</packageId>
+      <displayName>Combat Extended</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2890901044</steamWorkshopUrl>
+    </li>
+  </modDependencies>
+  <loadAfter><li>brrainz.harmony</li><li>ceteam.combatextended</li></loadAfter>
+  <description>Remote FPV piloting for Combat Extended. Operate a disposable kamikaze drone or fly and recharge a reusable Mavik scout drone.</description>
+</ModMetaData>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_BatteryCharge>Battery charge {0}</FPV_BatteryCharge>
+  <FPV_ChargerReady>Drone fully charged.</FPV_ChargerReady>
+  <FPV_ChargerCharging>Charging drone.</FPV_ChargerCharging>
+  <FPV_ChargerWaiting>Waiting for power.</FPV_ChargerWaiting>
+</LanguageData>
