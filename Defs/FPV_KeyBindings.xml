@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <KeyBindingCategoryDef>
+    <defName>FPV_DroneControls</defName>
+    <label>FPV drones</label>
+    <checkForConflicts>
+      <li>GameMapCamera</li>
+      <li>Development</li>
+      <li>Game</li>
+      <li>SelectionMisc</li>
+      <li>SelectionSpecial</li>
+      <li>MainTabs</li>
+      <li>Modifiers</li>
+    </checkForConflicts>
+  </KeyBindingCategoryDef>
+  <KeyBindingDef>
+    <defName>FPV_DetonateSelected</defName>
+    <label>Detonate selected FPV drones</label>
+    <category>FPV_DroneControls</category>
+    <defaultKeyCodeA>Delete</defaultKeyCodeA>
+  </KeyBindingDef>
+</Defs>

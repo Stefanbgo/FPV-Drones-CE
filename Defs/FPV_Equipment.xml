@@ -39,19 +39,6 @@
   </ThingDef>
 
   <ThingDef ParentName="FPV_EquipmentBase">
-    <defName>FPV_Goggles</defName>
-    <comps><li Class="FPVDrones.CompProperties_KitBinding" /></comps>
-    <label>FPV goggles</label>
-    <description>An obsolete flight accessory retained from older kits. Modern controllers have a built-in display.</description>
-    <graphicData>
-      <texPath>FPVDrones/Goggles</texPath>
-      <graphicClass>Graphic_Single</graphicClass>
-      <drawSize>(0.55,0.55)</drawSize>
-    </graphicData>
-    <statBases><Mass>0.25</Mass><MarketValue>40</MarketValue></statBases>
-  </ThingDef>
-
-  <ThingDef ParentName="FPV_EquipmentBase">
     <defName>FPV_Controller</defName>
     <equipmentType>Primary</equipmentType>
     <tools>

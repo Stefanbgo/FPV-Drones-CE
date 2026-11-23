@@ -334,6 +334,7 @@ public partial class FlyingDrone : Pawn
         UpdateAttackOrder(now);
         if (!flying) return;
         AdvanceFlight(now);
+        DroneCombatResponse.ApplyNearbySuppression(this);
         if (flying && IsScout && !Returning)
         {
             CheckReturnWarning(now);
@@ -542,7 +543,6 @@ public partial class FlyingDrone : Pawn
     {
         base.ExposeData();
         Scribe_References.Look(ref Operator, "fpvOperator");
-        Scribe_References.Look(ref boundGoggles, "fpvGoggles");
         Scribe_References.Look(ref boundController, "fpvController");
         Scribe_Values.Look(ref Returning, "fpvReturning");
         Scribe_Values.Look(ref LastFree, "fpvLastFree", IntVec3.Invalid);

@@ -32,11 +32,7 @@ public partial class FlyingDrone : Pawn
         }
         else
         {
-            var end = DroneControl.Command("FPV_UI_End".Translate(),
-                (DroneVariants.IsIncendiary(def) ? "FPV_UI_EndFireDesc" : "FPV_UI_EndDesc").Translate(),
-                () => FinishFlight(false), ControlIcon);
-            end.onHover = () => DroneControl.DrawBlast(this);
-            yield return end;
+            yield return new Command_DetonateDrone(this);
         }
     }
 
@@ -144,7 +140,7 @@ internal static class DronePayload
         private static bool Prefix(Pawn __instance, ref bool __result)
         {
             if (__instance is not FlyingDrone drone) return true;
-            __result = !drone.Spawned || drone.CrossingWall;
+            __result = !drone.Spawned || !drone.FlightActive || drone.CrossingWall;
             return false;
         }
     }
@@ -170,9 +166,21 @@ internal static class DronePayload
         }
         private static void Postfix(IAttackTarget target, IAttackTargetSearcher searcher, ref float __result)
         {
-            if (target is FlyingDrone { IsScout: false, CrossingWall: false } drone &&
-                drone.Position.DistanceToSquared(searcher.Thing.Position) <= 225)
-                __result += 85f;
+            if (target is not FlyingDrone { FlightActive: true, CrossingWall: false } drone)
+                return;
+
+            if (drone.IsScout)
+            {
+                // Airborne scouts have normal pawn priority even without an attack job.
+                if (!drone.IsCombatant()) __result += 50f;
+                return;
+            }
+
+            // CE keeps a bonus for its last target. A visible strike drone can compete
+            // with that target at normal weapon range and takes priority up close.
+            __result += 65f;
+            if (drone.Position.DistanceToSquared(searcher.Thing.Position) <= 225)
+                __result += 20f;
         }
     }
 }

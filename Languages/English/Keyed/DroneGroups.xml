@@ -2,4 +2,5 @@
   <FPV_GroupRoster>Drones ({0})</FPV_GroupRoster>
   <FPV_GroupAssigned>Group {0} assigned ({1} drones).</FPV_GroupAssigned>
   <FPV_GroupShortcut>Group {0}. Click or Alt+{1} to select. Ctrl-click or Ctrl+Alt+{1} to assign. Shift-click to add or remove a drone. Alt-drag to box-select drones.</FPV_GroupShortcut>
+  <FPV_FormationUnavailable>{0} of {1} drones can reach the formation.</FPV_FormationUnavailable>
 </LanguageData>

@@ -67,21 +67,6 @@
   </RecipeDef>
 
   <RecipeDef ParentName="FPV_RecipeBase">
-    <defName>FPV_MakeGoggles</defName>
-    <recipeUsers Inherit="False" />
-    <label>make FPV goggles</label>
-    <description>Assemble a reusable pair of FPV goggles.</description>
-    <jobString>Assembling FPV goggles.</jobString>
-    <workAmount>1500</workAmount>
-    <ingredients>
-      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>10</count></li>
-      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>1</count></li>
-    </ingredients>
-    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li></thingDefs></fixedIngredientFilter>
-    <products><FPV_Goggles>1</FPV_Goggles></products>
-  </RecipeDef>
-
-  <RecipeDef ParentName="FPV_RecipeBase">
     <defName>FPV_MakeController</defName>
     <label>make FPV controller</label>
     <description>Assemble a reusable handheld FPV controller.</description>

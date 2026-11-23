@@ -165,15 +165,25 @@ public static class DroneControl
         private static bool Prefix(Selector __instance)
         {
             var ev = Event.current;
+            Map map = Find.CurrentMap;
+            if (map == null) return true;
+            var formation = map.GetComponent<DroneFormation>();
+            if (formation.ProcessInput(__instance, ev)) return false;
             if (ev.type != EventType.MouseDown || ev.button != 1 ||
                 !__instance.SelectedObjects.OfType<FlyingDrone>().Any(DroneFlightOrders.IsPlayerFlight)) return true;
-            if (DroneGroups.IsPointerInRoster(Find.CurrentMap, ev.mousePosition))
+            if (DroneGroups.IsPointerInRoster(map, ev.mousePosition))
             {
                 ev.Use();
                 return false;
             }
             var cell = UI.MouseCell();
-            DroneFlightOrders.Issue(__instance, cell, DroneFlightOrders.TargetAt(cell, Find.CurrentMap), ev.shift);
+            var target = DroneFlightOrders.TargetAt(cell, map);
+            if (!ev.shift && target == null && formation.TryBegin(__instance, cell))
+            {
+                ev.Use();
+                return false;
+            }
+            DroneFlightOrders.Issue(__instance, cell, target, ev.shift);
             if (__instance.SelectedObjects.Any(selected => selected is not FlyingDrone)) return true;
             ev.Use();
             return false;

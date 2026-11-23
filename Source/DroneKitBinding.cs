@@ -23,20 +23,14 @@ public sealed class CompKitBinding : ThingComp
 
 public partial class FlyingDrone
 {
-    private Thing boundGoggles;
     private Thing boundController;
 
     internal void BindKit(Pawn pawn)
     {
-        ReplaceItem(ref boundGoggles, null);
-        ReplaceItem(ref boundController, DroneControl.EquippedController(pawn));
-    }
-
-    private void ReplaceItem(ref Thing previous, Thing next)
-    {
-        if (previous != next && previous?.TryGetComp<CompKitBinding>() is { } old && old.Flight == this)
+        Thing next = DroneControl.EquippedController(pawn);
+        if (boundController != next && boundController?.TryGetComp<CompKitBinding>() is { } old && old.Flight == this)
             old.Flight = null;
-        previous = next;
+        boundController = next;
         if (next != null) next.TryGetComp<CompKitBinding>().Flight = this;
     }
 

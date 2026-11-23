@@ -9,9 +9,6 @@
   <FPV_MakeScout.label>собрать «Мавик»</FPV_MakeScout.label>
   <FPV_MakeScout.description>Собрать многоразовый дрон-разведчик «Мавик».</FPV_MakeScout.description>
   <FPV_MakeScout.jobString>Собирает «Мавик».</FPV_MakeScout.jobString>
-  <FPV_MakeGoggles.label>собрать FPV-очки</FPV_MakeGoggles.label>
-  <FPV_MakeGoggles.description>Собрать многоразовые очки оператора.</FPV_MakeGoggles.description>
-  <FPV_MakeGoggles.jobString>Собирает FPV-очки.</FPV_MakeGoggles.jobString>
   <FPV_MakeController.label>собрать пульт FPV</FPV_MakeController.label>
   <FPV_MakeController.description>Собрать переносной пульт для управления дроном.</FPV_MakeController.description>
   <FPV_MakeController.jobString>Собирает пульт FPV.</FPV_MakeController.jobString>

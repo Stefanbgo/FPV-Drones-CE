@@ -4,8 +4,6 @@
   <FPV_Kamikaze.description>Одноразовый радиодрон с осколочным эффектом Combat Extended. Для запуска экипируйте пульт FPV в основной слот. Полный заряд даёт 30 секунд полёта, радиус управления — 100 клеток. При завершении полёта дрон подрывается. Вражеский РЭБ-рюкзак завершает полёт досрочно.</FPV_Kamikaze.description>
   <FPV_Scout.label>«Мавик»</FPV_Scout.label>
   <FPV_Scout.description>Многоразовый радиодрон-разведчик. Для запуска экипируйте пульт FPV в основной слот. Полный заряд даёт 80 секунд полёта, радиус управления — 120 клеток. Дрон можно вернуть, посадить и зарядить на FPV-станции. Вражеский РЭБ-рюкзак заставляет «Мавик» сесть.</FPV_Scout.description>
-  <FPV_Goggles.label>FPV-очки</FPV_Goggles.label>
-  <FPV_Goggles.description>Устаревшие очки из старого комплекта. У современных пультов есть встроенный экран.</FPV_Goggles.description>
   <FPV_Controller.tools.0.label>корпус</FPV_Controller.tools.0.label>
   <FPV_Controller.label>пульт FPV</FPV_Controller.label>
   <FPV_Controller.description>Возьмите пульт в основной слот и положите заряженный дрон в инвентарь. Один пульт обслуживает один активный аппарат.</FPV_Controller.description>
