@@ -10,7 +10,8 @@ internal sealed class Command_DetonateDrone : Command_Action
     internal Command_DetonateDrone(FlyingDrone drone)
     {
         defaultLabel = "FPV_UI_End".Translate();
-        defaultDesc = (DroneVariants.IsIncendiary(drone.def) ? "FPV_UI_EndFireDesc" : "FPV_UI_EndDesc").Translate();
+        defaultDesc = (DroneVariants.IsHeat(drone.def) ? "FPV_UI_EndHeatDesc" :
+            DroneVariants.IsIncendiary(drone.def) ? "FPV_UI_EndFireDesc" : "FPV_UI_EndDesc").Translate();
         icon = drone.ControlIcon;
         hotKey = DefDatabase<KeyBindingDef>.GetNamed("FPV_DetonateSelected");
         action = () =>

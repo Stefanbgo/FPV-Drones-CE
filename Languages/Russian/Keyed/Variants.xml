@@ -2,4 +2,5 @@
 <LanguageData>
   <FPV_EndJammed>Полёт аппарата {0} прерван вражеским РЭБ.</FPV_EndJammed>
   <FPV_UI_EndFireDesc>Завершить полёт с зажигательным эффектом Combat Extended в подсвеченной зоне.</FPV_UI_EndFireDesc>
+  <FPV_UI_EndHeatDesc>Завершить полёт со взрывом HEAT из Combat Extended. Для прямого попадания укажите цель приказом атаки.</FPV_UI_EndHeatDesc>
 </LanguageData>

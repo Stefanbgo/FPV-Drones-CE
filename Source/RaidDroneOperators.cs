@@ -313,7 +313,7 @@ public sealed class RaidDroneOperators : MapComponent
 
     private bool IsLaunchCell(Pawn pilot, IntVec3 goal, IntVec3 cell) =>
         cell.InBounds(map) && cell.Standable(map) && cell.GetEdifice(map) == null && !cell.Roofed(map) &&
-        goal.DistanceToSquared(cell) <= DroneRangeSquared &&
+        goal.DistanceToSquared(cell) <= DroneRangeSquared && DroneAirspace.IsFree(map, cell) &&
         !pilots.Any(entry => entry.Pawn != pilot && entry.LaunchCell == cell);
 
     private bool FriendlyInBlast(IEnumerable<IntVec3> cells, Faction faction, Pawn ignored)

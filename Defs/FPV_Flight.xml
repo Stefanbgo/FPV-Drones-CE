@@ -14,8 +14,8 @@
       <li Class="CombatExtended.RacePropertiesExtensionCE">
         <bodyShape>Plane</bodyShape>
         <overrideFactors>true</overrideFactors>
-        <horiScale>0.32</horiScale>
-        <vertScale>0.24</vertScale>
+        <horiScale>0.37</horiScale>
+        <vertScale>0.28</vertScale>
       </li>
     </modExtensions>
     <inspectorTabs Inherit="False" />

@@ -24,8 +24,16 @@ public static class DroneFlightOrders
                 return thing;
             building ??= thing;
         }
+
+        foreach (Pawn pawn in map.mapPawns.AllPawnsSpawned)
+            if (IsMultiCellPawn(pawn) && pawn.OccupiedRect().Contains(cell) && IsAttackTarget(pawn, map))
+                return pawn;
+
         return building;
     }
+
+    internal static bool IsMultiCellPawn(Thing thing) =>
+        thing is Pawn && (thing.def.size.x > 1 || thing.def.size.z > 1);
 
     internal static bool IsAttackTarget(Thing target, Map map) =>
         target is Pawn or Building && target.Spawned && target.Map == map &&
@@ -44,12 +52,14 @@ public static class DroneFlightOrders
             foreach (var drone in drones)
                 if (drone.TryAssignAttack(target)) sent = true;
         }
-        else
+        else if (cell.InBounds(drones[0].Map))
         {
+            var candidates = GenRadial.RadialCellsAround(cell, 2.9f, true);
             foreach (var drone in drones)
             {
-                if (!drone.AcceptsWaypoint(cell)) continue;
-                drone.SetWaypoint(cell, append);
+                var destination = candidates.FirstOrDefault(drone.AcceptsWaypoint, IntVec3.Invalid);
+                if (!destination.IsValid) continue;
+                drone.SetWaypoint(destination, append);
                 sent = true;
             }
         }
@@ -71,7 +81,8 @@ public partial class FlyingDrone
     public Thing AttackTarget => assignedAttackTarget;
 
     internal bool AcceptsWaypoint(IntVec3 cell) =>
-        flying && !Returning && batteryTicks > 0 && IsFreeFlightCell(cell) && IsInPilotingRange(cell);
+        flying && !Returning && batteryTicks > 0 && IsFreeFlightCell(cell) && IsInPilotingRange(cell) &&
+        DroneAirspace.IsWaypointFree(this, cell);
 
     internal bool TryAssignAttack(Thing target)
     {
@@ -88,18 +99,22 @@ public partial class FlyingDrone
     private bool PlanAttack(Thing target, out IntVec3 approach, out IntVec3 impact)
     {
         approach = impact = target.Position;
-        if (!IsInPilotingRange(impact)) return false;
-        if (CanReachRaidCell(approach)) return true;
-        if (target is not Building building) return false;
-
-        CellRect occupied = building.OccupiedRect();
-        var checkedCells = new HashSet<IntVec3>();
-        foreach (var cell in occupied.Cells)
+        if (!DroneFlightOrders.IsMultiCellPawn(target))
         {
+            if (!IsInPilotingRange(impact)) return false;
+            if (CanReachRaidCell(approach)) return true;
+            if (target is not Building) return false;
+        }
+
+        CellRect occupied = target.OccupiedRect();
+        var checkedCells = new HashSet<IntVec3>();
+        foreach (var cell in occupied.EdgeCells.OrderBy(cell => (Position - cell).LengthHorizontalSquared))
+        {
+            if (!IsInPilotingRange(cell)) continue;
             foreach (var direction in GenAdj.CardinalDirections)
             {
                 IntVec3 nearby = cell + direction;
-                if (occupied.Contains(nearby) || !checkedCells.Add(nearby) || !IsInPilotingRange(cell) || !CanReachRaidCell(nearby))
+                if (occupied.Contains(nearby) || !checkedCells.Add(nearby) || !CanReachRaidCell(nearby))
                     continue;
                 approach = nearby;
                 impact = cell;
@@ -137,17 +152,21 @@ public partial class FlyingDrone
             StopAttackRoute();
             return;
         }
+        if (!DroneAirspace.HasAttackTurn(this)) return;
 
-        if (assignedAttackTarget.Position == observedTargetCell && !segmentTo.IsValid && Position == attackApproach)
+        CellRect occupied = assignedAttackTarget.OccupiedRect();
+        bool contactStillValid = assignedAttackTarget.Position == observedTargetCell && occupied.Contains(attackImpact) &&
+            (attackApproach == attackImpact || !occupied.Contains(attackApproach));
+        if (contactStillValid && !segmentTo.IsValid && Position == attackApproach)
         {
-            if (attackApproach != attackImpact && IsWallTransitCell(attackImpact))
+            if (assignedAttackTarget is Building && attackApproach != attackImpact && IsWallTransitCell(attackImpact))
                 EndRaidAtWall(attackImpact);
             else
-                CompleteFlight(false, false, "FPV_EndAttack", attackImpact);
+                CompleteFlight(false, false, "FPV_EndAttack", attackImpact, assignedAttackTarget);
             return;
         }
 
-        if (now < nextAttackRouteCheck || assignedAttackTarget.Position == observedTargetCell && !routeBlocked)
+        if (now < nextAttackRouteCheck || contactStillValid && !routeBlocked)
             return;
 
         if (PlanAttack(assignedAttackTarget, out var approach, out var impact))

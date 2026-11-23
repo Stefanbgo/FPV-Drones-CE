@@ -79,7 +79,7 @@ public partial class FlyingDrone : Pawn
             return;
         }
 
-        if (!IsFreeFlightCell(cell) || !IsInPilotingRange(cell))
+        if (!AcceptsWaypoint(cell))
         {
             Messages.Message("FPV_Unreachable".Translate(), MessageTypeDefOf.RejectInput, false);
             return;
@@ -123,14 +123,15 @@ public partial class FlyingDrone : Pawn
             return !routeBlocked;
         if (!CanReachRaidCell(cell))
             return false;
-        SetWaypoint(cell, false);
+        AssignWaypoint(cell, false);
         return true;
     }
 
     internal void EndRaidAtWall(IntVec3 wallCell)
     {
         if (IsScout || !Spawned || segmentTo.IsValid || !wallCell.InBounds(Map) ||
-            (Position - wallCell).LengthHorizontalSquared != 1 || !IsWallTransitCell(wallCell))
+            (Position - wallCell).LengthHorizontalSquared != 1 || !IsWallTransitCell(wallCell) ||
+            !DroneAirspace.IsStepFree(this, Position, wallCell))
             return;
 
         waypoints.Clear();
@@ -253,7 +254,7 @@ public partial class FlyingDrone : Pawn
         CompleteFlight(hit, false, hit ? "FPV_EndHit" : IsScout ? "FPV_EndLanded" : "FPV_EndCommand");
     }
 
-    private void CompleteFlight(bool hit, bool earlyReturn, string reason = "FPV_EndReturned", IntVec3? impactCell = null)
+    private void CompleteFlight(bool hit, bool earlyReturn, string reason = "FPV_EndReturned", IntVec3? impactCell = null, Thing contact = null)
     {
         if (!flying || !Spawned)
         {
@@ -268,7 +269,7 @@ public partial class FlyingDrone : Pawn
         ReleasePilot();
         if (!IsScout)
         {
-            DroneControl.Blast(this, cell);
+            DronePayload.Detonate(this, cell, contact);
         }
 
         if (!Destroyed)
@@ -331,6 +332,7 @@ public partial class FlyingDrone : Pawn
             return;
         }
 
+        if (restoreAirspace && !RestoreAirspace()) return;
         UpdateAttackOrder(now);
         if (!flying) return;
         AdvanceFlight(now);
@@ -395,7 +397,7 @@ public partial class FlyingDrone : Pawn
             {
                 if (strikingWall)
                 {
-                    CompleteFlight(false, false, "FPV_EndWall", segmentTo);
+                    CompleteFlight(false, false, "FPV_EndWall", segmentTo, AttackTarget);
                     return;
                 }
                 ReachFreeCell(segmentTo);
@@ -421,12 +423,14 @@ public partial class FlyingDrone : Pawn
 
     private bool BeginNextStep(int now)
     {
+        if (!DroneAirspace.HasAttackTurn(this)) return false;
         while (flying)
         {
             if (pathIndex < path.Count)
             {
                 IntVec3 next = path[pathIndex];
-                if (CanTravelStep(Position, next, (Position - next).LengthHorizontalSquared == 4))
+                if (CanTravelStep(Position, next, (Position - next).LengthHorizontalSquared == 4) &&
+                    DroneAirspace.IsStepFree(this, Position, next))
                 {
                     pathIndex++;
                     SetSegment(next);
@@ -438,7 +442,7 @@ public partial class FlyingDrone : Pawn
 
             if (Returning)
             {
-                return BeginReturnStep();
+                return BeginReturnStep(now);
             }
 
             if (waypoints.Count == 0)
@@ -454,7 +458,7 @@ public partial class FlyingDrone : Pawn
             }
 
             if (now < nextRouteCheck ||
-                !TryFindPath(Position, waypoints[0], out List<IntVec3> route, out _))
+                !TryFindPath(Position, waypoints[0], out List<IntVec3> route, out _, avoidDrones: true))
             {
                 routeBlocked = true;
                 if (now >= nextRouteCheck)
@@ -471,7 +475,7 @@ public partial class FlyingDrone : Pawn
         return false;
     }
 
-    private bool BeginReturnStep()
+    private bool BeginReturnStep(int now)
     {
         if (Position == landingTarget && IsLandingCell(Position))
         {
@@ -479,11 +483,21 @@ public partial class FlyingDrone : Pawn
             return false;
         }
 
-        if (!TryFindLandingPath(Position, returnPoint, true, out landingTarget, out List<IntVec3> route, out float distance) ||
+        if (now < nextRouteCheck) return false;
+        if (!TryFindLandingPath(Position, returnPoint, true, out landingTarget, out List<IntVec3> route,
+                out float distance, avoidDrones: true) ||
             TicksNeeded(distance) > batteryTicks)
         {
+            if (TryFindLandingPath(Position, returnPoint, true, out _, out _, out distance) &&
+                TicksNeeded(distance) <= batteryTicks)
+            {
+                nextRouteCheck = now + RouteRetryTicks;
+                return false;
+            }
+
             IntVec3 available = FindNearestLandingCell(Position);
-            if (available != Position && TryFindPath(Position, available, out route, out distance) && TicksNeeded(distance) <= batteryTicks)
+            if (available != Position && TryFindPath(Position, available, out route, out distance, avoidDrones: true) &&
+                TicksNeeded(distance) <= batteryTicks)
             {
                 landingTarget = available;
             }
@@ -569,6 +583,7 @@ public partial class FlyingDrone : Pawn
         {
             waypoints ??= new List<IntVec3>();
             path ??= new List<IntVec3>();
+            restoreAirspace = flying;
         }
     }
 }

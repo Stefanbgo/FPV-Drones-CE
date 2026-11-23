@@ -2,4 +2,5 @@
 <LanguageData>
   <FPV_EndJammed>{0} flight ended under enemy jamming.</FPV_EndJammed>
   <FPV_UI_EndFireDesc>End the flight and apply the Combat Extended Molotov effect in the highlighted area.</FPV_UI_EndFireDesc>
+  <FPV_UI_EndHeatDesc>End the flight with the Combat Extended HEAT blast. Use an attack order for a direct hit.</FPV_UI_EndHeatDesc>
 </LanguageData>

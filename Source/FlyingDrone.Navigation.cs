@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -67,7 +68,7 @@ public partial class FlyingDrone
         IntVec3 offset = to - from;
         if (crossedWall)
         {
-            IntVec3 transit = new((from.x + to.x) / 2, 0, (from.z + to.z) / 2);
+            IntVec3 transit = DroneAirspace.TransitCell(from, to);
             return IsWallTransitCell(transit) &&
                 !Map.roofGrid.Roofed(from) && !Map.roofGrid.Roofed(transit) && !Map.roofGrid.Roofed(to);
         }
@@ -81,7 +82,7 @@ public partial class FlyingDrone
         return true;
     }
 
-    private bool TryFindPath(IntVec3 start, IntVec3 goal, out List<IntVec3> result, out float distance)
+    private bool TryFindPath(IntVec3 start, IntVec3 goal, out List<IntVec3> result, out float distance, bool avoidDrones = false)
     {
         if (!IsFreeFlightCell(goal) || !IsInPilotingRange(goal))
         {
@@ -90,14 +91,18 @@ public partial class FlyingDrone
             return false;
         }
 
-        return TryFindPath(start, new[] { goal }, out _, out result, out distance);
+        return TryFindPath(start, new[] { goal }, out _, out result, out distance, avoidDrones);
     }
 
-    private bool TryFindPath(IntVec3 start, IReadOnlyList<IntVec3> goals, out IntVec3 destination, out List<IntVec3> result, out float distance)
+    private bool TryFindPath(IntVec3 start, IReadOnlyList<IntVec3> goals, out IntVec3 destination,
+        out List<IntVec3> result, out float distance, bool avoidDrones = false)
     {
         destination = IntVec3.Invalid;
         result = null;
         distance = 0f;
+        HashSet<IntVec3> occupied = avoidDrones ? DroneAirspace.OccupiedCells(this) : null;
+        if (occupied is { Count: > 0 })
+            goals = goals.Where(cell => !occupied.Contains(cell)).ToArray();
         if (goals.Count == 0)
         {
             return false;
@@ -140,7 +145,8 @@ public partial class FlyingDrone
                     neighbor += direction;
                 }
 
-                if (!CanTravelStep(entry.Cell, neighbor, wall))
+                if (!CanTravelStep(entry.Cell, neighbor, wall) || occupied != null &&
+                    (occupied.Contains(neighbor) || wall && occupied.Contains(DroneAirspace.TransitCell(entry.Cell, neighbor))))
                 {
                     continue;
                 }
@@ -175,9 +181,11 @@ public partial class FlyingDrone
         return shortest;
     }
 
-    private bool TryFindLandingPath(IntVec3 start, IntVec3 around, bool preferAround, out IntVec3 cell, out List<IntVec3> path, out float distance)
+    private bool TryFindLandingPath(IntVec3 start, IntVec3 around, bool preferAround, out IntVec3 cell,
+        out List<IntVec3> path, out float distance, bool avoidDrones = false)
     {
-        if (preferAround && IsLandingCell(around) && TryFindPath(start, around, out List<IntVec3> directPath, out float directDistance))
+        if (preferAround && IsLandingCell(around) && TryFindPath(start, around, out List<IntVec3> directPath,
+                out float directDistance, avoidDrones))
         {
             cell = around;
             path = directPath;
@@ -195,7 +203,7 @@ public partial class FlyingDrone
             }
         }
 
-        return TryFindPath(start, alternatives, out cell, out path, out distance);
+        return TryFindPath(start, alternatives, out cell, out path, out distance, avoidDrones);
     }
 
     private IntVec3 FindNearestLandingCell(IntVec3 origin)

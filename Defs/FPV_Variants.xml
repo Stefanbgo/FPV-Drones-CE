@@ -39,6 +39,26 @@
     <statBases><Mass>3.5</Mass><Bulk>4</Bulk><MarketValue>175</MarketValue></statBases>
   </ThingDef>
 
+  <ThingDef ParentName="FPV_DroneItemBase">
+    <defName>FPV_Heat</defName>
+    <label>HEAT FPV</label>
+    <description>Single-use radio FPV armed with the Combat Extended RPG-7 HEAT effect. Order an attack to strike the target directly. Equip an FPV controller in the primary slot to launch. The drone flies for 30 seconds within 100 cells of its operator. A hostile jammer ends the flight early.</description>
+    <graphicData>
+      <texPath>FPVDrones/Kamikaze</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(0.86,0.86)</drawSize>
+      <color>(255,226,113)</color>
+    </graphicData>
+    <statBases><Mass>4.4</Mass><Bulk>6</Bulk><MarketValue>205</MarketValue></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_AirframeBase">
+    <defName>FPV_HeatAir</defName>
+    <label>HEAT FPV</label>
+    <description>HEAT FPV in flight.</description>
+    <statBases><MoveSpeed>6</MoveSpeed></statBases>
+  </ThingDef>
+
   <ThingDef ParentName="FPV_AirframeBase">
     <defName>FPV_KamikazeFiberAir</defName>
     <label>fiber-optic fragmentation FPV</label>
@@ -63,6 +83,13 @@
   <PawnKindDef Name="FPV_StrikeVariantKind" Abstract="True">
     <combatPower>20</combatPower>
     <canStrip>false</canStrip>
+  </PawnKindDef>
+
+  <PawnKindDef ParentName="FPV_StrikeVariantKind">
+    <defName>FPV_HeatAir</defName>
+    <label>HEAT FPV</label>
+    <race>FPV_HeatAir</race>
+    <lifeStages><li><bodyGraphicData><texPath>FPVDrones/KamikazeAir</texPath><drawSize>(0.9,0.9)</drawSize><color>(255,226,113)</color></bodyGraphicData></li></lifeStages>
   </PawnKindDef>
 
   <PawnKindDef ParentName="FPV_StrikeVariantKind">

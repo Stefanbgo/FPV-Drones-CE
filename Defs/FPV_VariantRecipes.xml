@@ -85,4 +85,30 @@
     </ingredients>
     <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Chemfuel</li></thingDefs></fixedIngredientFilter>
   </RecipeDef>
+  <RecipeDef Name="FPV_HeatRecipe" ParentName="FPV_StrikeVariantRecipe" Abstract="True">
+    <label>make HEAT FPV</label>
+    <description>Assemble a radio FPV with the Combat Extended RPG-7 HEAT effect.</description>
+    <jobString>Assembling a HEAT FPV.</jobString>
+    <products><FPV_Heat>1</FPV_Heat></products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_HeatRecipe">
+    <defName>FPV_MakeHeatAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>60</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>4</count></li>
+      <li><filter><thingDefs><li>Ammo_RPG7Grenade_HEAT</li></thingDefs></filter><count>1</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Ammo_RPG7Grenade_HEAT</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_HeatRecipe">
+    <defName>FPV_MakeHeatNoAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>65</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>5</count></li>
+      <li><filter><thingDefs><li>Chemfuel</li></thingDefs></filter><count>5</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Chemfuel</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
 </Defs>

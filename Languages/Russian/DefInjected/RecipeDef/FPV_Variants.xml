@@ -18,6 +18,12 @@
   <FPV_MakeIncendiaryFiberNoAmmo.label>собрать зажигательный FPV на оптоволокне</FPV_MakeIncendiaryFiberNoAmmo.label>
   <FPV_MakeIncendiaryFiberNoAmmo.description>Собрать устойчивый к РЭБ FPV с зажигательным эффектом CE.</FPV_MakeIncendiaryFiberNoAmmo.description>
   <FPV_MakeIncendiaryFiberNoAmmo.jobString>Собирает зажигательный FPV на оптоволокне.</FPV_MakeIncendiaryFiberNoAmmo.jobString>
+  <FPV_MakeHeatAmmo.label>собрать кумулятивный FPV</FPV_MakeHeatAmmo.label>
+  <FPV_MakeHeatAmmo.description>Собрать радиодрон с эффектом кумулятивного выстрела РПГ-7 из Combat Extended.</FPV_MakeHeatAmmo.description>
+  <FPV_MakeHeatAmmo.jobString>Собирает кумулятивный FPV.</FPV_MakeHeatAmmo.jobString>
+  <FPV_MakeHeatNoAmmo.label>собрать кумулятивный FPV</FPV_MakeHeatNoAmmo.label>
+  <FPV_MakeHeatNoAmmo.description>Собрать радиодрон с эффектом кумулятивного выстрела РПГ-7 из Combat Extended.</FPV_MakeHeatNoAmmo.description>
+  <FPV_MakeHeatNoAmmo.jobString>Собирает кумулятивный FPV.</FPV_MakeHeatNoAmmo.jobString>
   <FPV_MakeJammerBackpack.label>собрать РЭБ-рюкзак</FPV_MakeJammerBackpack.label>
   <FPV_MakeJammerBackpack.description>Собрать носимый рюкзак для подавления вражеских радиодронов.</FPV_MakeJammerBackpack.description>
   <FPV_MakeJammerBackpack.jobString>Собирает РЭБ-рюкзак.</FPV_MakeJammerBackpack.jobString>

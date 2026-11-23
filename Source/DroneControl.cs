@@ -68,9 +68,16 @@ public static class DroneControl
             ActiveDrone(pawn) != null) return null;
         var charge = item.TryGetComp<CompDroneBattery>()?.Charge01 ?? 0f;
         if (charge <= 0f) return null;
+        var cell = DroneAirspace.FindLaunchCell(pawn);
+        if (!cell.IsValid)
+        {
+            if (pawn.Faction == Faction.OfPlayer)
+                Messages.Message("FPV_Unreachable".Translate(), pawn, MessageTypeDefOf.RejectInput, false);
+            return null;
+        }
         var kind = DroneVariants.AirKindFor(item);
         var drone = (FlyingDrone)PawnGenerator.GeneratePawn(kind, pawn.Faction);
-        GenSpawn.Spawn(drone, pawn.Position, pawn.Map);
+        GenSpawn.Spawn(drone, cell, pawn.Map);
         drone.BeginFlight(pawn, charge);
         drone.BindKit(pawn);
         if (pawn.CurJobDef == PilotJob && pawn.CurJob.targetB.Thing == item)

@@ -20,6 +20,7 @@ internal static class DroneVariants
     internal static bool IsFiber(ThingDef def) => ItemName(def) is "FPV_KamikazeFiber" or "FPV_IncendiaryFiber";
 
     internal static bool IsIncendiary(ThingDef def) => ItemName(def) is "FPV_Incendiary" or "FPV_IncendiaryFiber";
+    internal static bool IsHeat(ThingDef def) => ItemName(def) == "FPV_Heat";
 
     private static string ItemName(ThingDef def)
     {
@@ -28,5 +29,5 @@ internal static class DroneVariants
     }
 
     private static bool IsItemName(string name) => name is "FPV_Kamikaze" or "FPV_KamikazeFiber" or
-        "FPV_Incendiary" or "FPV_IncendiaryFiber" or "FPV_Scout";
+        "FPV_Incendiary" or "FPV_IncendiaryFiber" or "FPV_Heat" or "FPV_Scout";
 }

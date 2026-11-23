@@ -12,6 +12,10 @@
   <FPV_IncendiaryAir.description>Зажигательный FPV в полёте.</FPV_IncendiaryAir.description>
   <FPV_IncendiaryFiberAir.label>зажигательный FPV на оптоволокне</FPV_IncendiaryFiberAir.label>
   <FPV_IncendiaryFiberAir.description>Зажигательный FPV на оптоволокне в полёте.</FPV_IncendiaryFiberAir.description>
+  <FPV_Heat.label>кумулятивный FPV</FPV_Heat.label>
+  <FPV_Heat.description>Одноразовый радиодрон с эффектом кумулятивного выстрела РПГ-7 из Combat Extended. Укажите цель приказом атаки для прямого попадания. Для запуска экипируйте пульт FPV в основной слот. Дрон летит до 30 секунд в радиусе 100 клеток. Вражеский РЭБ-рюкзак завершает полёт досрочно.</FPV_Heat.description>
+  <FPV_HeatAir.label>кумулятивный FPV</FPV_HeatAir.label>
+  <FPV_HeatAir.description>Кумулятивный FPV в полёте.</FPV_HeatAir.description>
   <FPV_JammerBackpack.label>РЭБ-рюкзак</FPV_JammerBackpack.label>
   <FPV_JammerBackpack.description>Наденьте рюкзак на спину. Когда носитель способен действовать, рюкзак завершает полёт вражеских радиодронов в радиусе 30 клеток. Разведчики садятся с остатком заряда, а ударные дроны применяют эффект своего заряда. Союзные и оптоволоконные аппараты продолжают полёт.</FPV_JammerBackpack.description>
 </LanguageData>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using CombatExtended;
 using HarmonyLib;
 using RimWorld;
@@ -91,25 +92,57 @@ public sealed class FlightWarnings : MapComponent
 
 internal static class DronePayload
 {
-    private static ThingDef ProjectileDefFor(ThingDef droneDef) => DroneVariants.IsIncendiary(droneDef)
-        ? DefDatabase<ThingDef>.GetNamed("Proj_GrenadeMolotov")
-        : ((AmmoDef)DefDatabase<ThingDef>.GetNamed("Ammo_RPG7Grenade_Frag")).detonateProjectile;
+    private static ThingDef ProjectileDefFor(ThingDef droneDef)
+    {
+        if (DroneVariants.IsIncendiary(droneDef))
+            return DefDatabase<ThingDef>.GetNamed("Proj_GrenadeMolotov");
+
+        string ammoName = DroneVariants.IsHeat(droneDef) ? "Ammo_RPG7Grenade_HEAT" : "Ammo_RPG7Grenade_Frag";
+        return ((AmmoDef)DefDatabase<ThingDef>.GetNamed(ammoName)).detonateProjectile;
+    }
 
     // Keep the projectile's native impact path (including patched projectile subclasses
     // and comps). Reflection bridges CE's historical UnityEngine assembly reference
     // to the Unity-compatible vector type supplied by the 1.7 game runtime.
-    private static readonly System.Reflection.MethodInfo LaunchProjectile =
+    private static readonly MethodInfo LaunchProjectile =
         AccessTools.Method(typeof(ProjectileCE), nameof(ProjectileCE.Launch),
             new[] { typeof(Thing), typeof(Vector2), typeof(float), typeof(float), typeof(float), typeof(float), typeof(Thing), typeof(float) });
 
-    internal static void Detonate(FlyingDrone drone, IntVec3 cell)
+    internal static void Detonate(FlyingDrone drone, IntVec3 cell, Thing contact = null)
     {
         var map = drone.Map;
+        if (!DroneVariants.IsHeat(drone.def) || contact?.Spawned != true || contact.Map != map ||
+            !contact.OccupiedRect().Contains(cell))
+            contact = null;
+
+        float height = 0.1f;
+        float rotation = 0f;
+        if (contact != null)
+        {
+            if (!DroneFlightOrders.IsMultiCellPawn(contact))
+                height = Mathf.Max(height, new CollisionVertical(contact).HeightRange.Average);
+            var direction = cell - drone.Position;
+            rotation = direction == IntVec3.Zero ? -drone.Rotation.AsAngle : -direction.ToVector3().AngleFlat();
+        }
+
         var projectile = (ProjectileCE)GenSpawn.Spawn(ProjectileDefFor(drone.def), cell, map);
         var position = cell.ToVector3Shifted();
         var origin = new Vector2(position.x, position.z);
-        LaunchProjectile.Invoke(projectile, new object[] { drone.Operator ?? (Thing)drone, origin, 0f, 0f, 0.1f, -1f, null, -1f });
-        projectile.Impact(null);
+        Thing launcher = drone.Operator ?? (Thing)drone;
+        LaunchProjectile.Invoke(projectile, new object[] { launcher, origin, 0f, rotation, height, -1f, null, -1f });
+        if (contact != null)
+            projectile.intendedTarget = contact;
+
+        var vehicleHandler = contact == null ? null : VehicleImpact.Register(contact, launcher, cell);
+        try
+        {
+            projectile.Impact(contact);
+        }
+        finally
+        {
+            if (vehicleHandler != null)
+                VehicleImpact.Deregister(vehicleHandler, launcher);
+        }
     }
 
     internal static void DrawPreview(FlyingDrone drone)
@@ -129,9 +162,49 @@ internal static class DronePayload
 
     internal static IEnumerable<IntVec3> BlastCells(ThingDef droneDef, IntVec3 cell, Map map)
     {
-        if (map == null || !cell.InBounds(map) || ProjectileDefFor(droneDef).projectile is not { } props)
+        if (map == null || !cell.InBounds(map))
             return Enumerable.Empty<IntVec3>();
-        return props.damageDef.Worker.ExplosionCellsToHit(cell, map, props.explosionRadius);
+
+        ThingDef projectile = ProjectileDefFor(droneDef);
+        if (projectile.projectile is not { } props)
+            return Enumerable.Empty<IntVec3>();
+        var cells = props.damageDef.Worker.ExplosionCellsToHit(cell, map, props.explosionRadius);
+        if (DroneVariants.IsHeat(droneDef) && projectile.GetCompProperties<CompProperties_ExplosiveCE>() is { } explosive)
+            return cells.Concat(explosive.explosiveDamageType.Worker.ExplosionCellsToHit(cell, map, explosive.explosiveRadius)).Distinct();
+        return cells;
+    }
+
+    private static class VehicleImpact
+    {
+        private static readonly FieldInfo Handler;
+        private static readonly MethodInfo RegisterImpacter;
+        private static readonly MethodInfo DeregisterImpacter;
+
+        static VehicleImpact()
+        {
+            var vehicleType = AccessTools.TypeByName("Vehicles.VehiclePawn");
+            if (vehicleType == null) return;
+            Handler = AccessTools.Field(vehicleType, "statHandler");
+            if (Handler == null) return;
+            RegisterImpacter = AccessTools.Method(Handler.FieldType, "RegisterImpacter", new[] { typeof(Thing), typeof(IntVec3) });
+            DeregisterImpacter = AccessTools.Method(Handler.FieldType, "DeregisterImpacter", new[] { typeof(Thing) });
+        }
+
+        internal static object Register(Thing target, Thing launcher, IntVec3 cell)
+        {
+            if (Handler?.DeclaringType.IsInstanceOfType(target) != true || RegisterImpacter == null || DeregisterImpacter == null)
+                return null;
+            object handler = Handler.GetValue(target);
+            if (handler == null) return null;
+
+            // Vehicle Framework uses the impact cell to resolve component damage.
+            // CE still applies the hit and attributes it to the drone operator.
+            RegisterImpacter.Invoke(handler, new object[] { launcher, cell });
+            return handler;
+        }
+
+        internal static void Deregister(object handler, Thing launcher) =>
+            DeregisterImpacter.Invoke(handler, new object[] { launcher });
     }
 
     [HarmonyPatch(typeof(Pawn), nameof(Pawn.ThreatDisabled))]
