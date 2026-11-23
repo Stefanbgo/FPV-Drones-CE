@@ -53,7 +53,7 @@
     <defName>FPV_KamikazeAir</defName>
     <label>FPV kamikaze</label>
     <description>A kamikaze drone in flight.</description>
-    <statBases><MoveSpeed>5</MoveSpeed></statBases>
+    <statBases><MoveSpeed>6</MoveSpeed></statBases>
   </ThingDef>
 
   <ThingDef ParentName="FPV_AirframeBase">

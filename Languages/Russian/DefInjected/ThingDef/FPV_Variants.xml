@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_KamikazeFiber.label>осколочный FPV на оптоволокне</FPV_KamikazeFiber.label>
+  <FPV_KamikazeFiber.description>Одноразовый FPV-дрон с осколочным эффектом Combat Extended. Для запуска экипируйте пульт FPV в основной слот. Дрон летит до 30 секунд в радиусе 100 клеток и подрывается при завершении полёта. Устойчив к РЭБ.</FPV_KamikazeFiber.description>
+  <FPV_Incendiary.label>зажигательный FPV</FPV_Incendiary.label>
+  <FPV_Incendiary.description>Одноразовый радиодрон с зажигательным эффектом коктейля Молотова CE. Для запуска экипируйте пульт FPV в основной слот. Дрон летит до 30 секунд в радиусе 100 клеток и применяет зажигательный эффект при завершении полёта. Вражеский РЭБ-рюкзак завершает полёт досрочно.</FPV_Incendiary.description>
+  <FPV_IncendiaryFiber.label>зажигательный FPV на оптоволокне</FPV_IncendiaryFiber.label>
+  <FPV_IncendiaryFiber.description>Одноразовый FPV-дрон с зажигательным эффектом коктейля Молотова CE. Для запуска экипируйте пульт FPV в основной слот. Дрон летит до 30 секунд в радиусе 100 клеток и применяет зажигательный эффект при завершении полёта. Устойчив к РЭБ.</FPV_IncendiaryFiber.description>
+  <FPV_KamikazeFiberAir.label>осколочный FPV на оптоволокне</FPV_KamikazeFiberAir.label>
+  <FPV_KamikazeFiberAir.description>Осколочный FPV на оптоволокне в полёте.</FPV_KamikazeFiberAir.description>
+  <FPV_IncendiaryAir.label>зажигательный FPV</FPV_IncendiaryAir.label>
+  <FPV_IncendiaryAir.description>Зажигательный FPV в полёте.</FPV_IncendiaryAir.description>
+  <FPV_IncendiaryFiberAir.label>зажигательный FPV на оптоволокне</FPV_IncendiaryFiberAir.label>
+  <FPV_IncendiaryFiberAir.description>Зажигательный FPV на оптоволокне в полёте.</FPV_IncendiaryFiberAir.description>
+  <FPV_JammerBackpack.label>РЭБ-рюкзак</FPV_JammerBackpack.label>
+  <FPV_JammerBackpack.description>Наденьте рюкзак на спину. Когда носитель способен действовать, рюкзак завершает полёт вражеских радиодронов в радиусе 30 клеток. Разведчики садятся с остатком заряда, а ударные дроны применяют эффект своего заряда. Союзные и оптоволоконные аппараты продолжают полёт.</FPV_JammerBackpack.description>
+</LanguageData>

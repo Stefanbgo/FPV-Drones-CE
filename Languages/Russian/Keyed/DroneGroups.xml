@@ -1,0 +1,5 @@
+<LanguageData>
+  <FPV_GroupRoster>Дроны ({0})</FPV_GroupRoster>
+  <FPV_GroupAssigned>Группа {0} назначена. Дронов: {1}.</FPV_GroupAssigned>
+  <FPV_GroupShortcut>Группа {0}. Щелчок или Alt+{1} — выбрать. Ctrl+щелчок или Ctrl+Alt+{1} — назначить. Shift+щелчок добавляет или убирает дрон. Alt+рамка выделяет дроны.</FPV_GroupShortcut>
+</LanguageData>

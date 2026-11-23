@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <RecipeDef Name="FPV_StrikeVariantRecipe" ParentName="FPV_RecipeBase" Abstract="True">
+    <workAmount>4400</workAmount>
+    <workerClass>FPVDrones.RecipeWorker_DroneAmmoMode</workerClass>
+  </RecipeDef>
+
+  <RecipeDef Name="FPV_FragmentationFiberRecipe" ParentName="FPV_StrikeVariantRecipe" Abstract="True">
+    <label>make fiber-optic fragmentation FPV</label>
+    <description>Assemble a fragmentation FPV that remains active in the in-game jammer field.</description>
+    <jobString>Assembling a fiber-optic fragmentation FPV.</jobString>
+    <products><FPV_KamikazeFiber>1</FPV_KamikazeFiber></products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_FragmentationFiberRecipe">
+    <defName>FPV_MakeKamikazeFiberAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>50</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>5</count></li>
+      <li><filter><thingDefs><li>Ammo_RPG7Grenade_Frag</li></thingDefs></filter><count>1</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Ammo_RPG7Grenade_Frag</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_FragmentationFiberRecipe">
+    <defName>FPV_MakeKamikazeFiberNoAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>55</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>6</count></li>
+      <li><filter><thingDefs><li>Chemfuel</li></thingDefs></filter><count>5</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Chemfuel</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef Name="FPV_IncendiaryRecipe" ParentName="FPV_StrikeVariantRecipe" Abstract="True">
+    <label>make incendiary FPV</label>
+    <description>Assemble a radio FPV with the Combat Extended Molotov effect.</description>
+    <jobString>Assembling an incendiary FPV.</jobString>
+    <products><FPV_Incendiary>1</FPV_Incendiary></products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_IncendiaryRecipe">
+    <defName>FPV_MakeIncendiaryAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>50</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>3</count></li>
+      <li><filter><thingDefs><li>Weapon_GrenadeMolotov</li></thingDefs></filter><count>1</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Weapon_GrenadeMolotov</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_IncendiaryRecipe">
+    <defName>FPV_MakeIncendiaryNoAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>55</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>4</count></li>
+      <li><filter><thingDefs><li>Chemfuel</li></thingDefs></filter><count>5</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Chemfuel</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef Name="FPV_IncendiaryFiberRecipe" ParentName="FPV_StrikeVariantRecipe" Abstract="True">
+    <label>make fiber-optic incendiary FPV</label>
+    <description>Assemble an incendiary FPV that remains active in the in-game jammer field.</description>
+    <jobString>Assembling a fiber-optic incendiary FPV.</jobString>
+    <products><FPV_IncendiaryFiber>1</FPV_IncendiaryFiber></products>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_IncendiaryFiberRecipe">
+    <defName>FPV_MakeIncendiaryFiberAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>50</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>5</count></li>
+      <li><filter><thingDefs><li>Weapon_GrenadeMolotov</li></thingDefs></filter><count>1</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Weapon_GrenadeMolotov</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+
+  <RecipeDef ParentName="FPV_IncendiaryFiberRecipe">
+    <defName>FPV_MakeIncendiaryFiberNoAmmo</defName>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>55</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>6</count></li>
+      <li><filter><thingDefs><li>Chemfuel</li></thingDefs></filter><count>5</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li><li>Chemfuel</li></thingDefs></fixedIngredientFilter>
+  </RecipeDef>
+</Defs>

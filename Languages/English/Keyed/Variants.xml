@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_EndJammed>{0} flight ended under enemy jamming.</FPV_EndJammed>
+  <FPV_UI_EndFireDesc>End the flight and apply the Combat Extended Molotov effect in the highlighted area.</FPV_UI_EndFireDesc>
+</LanguageData>

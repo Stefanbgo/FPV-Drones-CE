@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_RaidNoFaction>Для тестового рейда нужна враждебная фракция промышленного или более высокого уровня.</FPV_RaidNoFaction>
+  <FPV_RaidUnavailable>Тестовый рейд не смог прибыть на эту карту.</FPV_RaidUnavailable>
+</LanguageData>

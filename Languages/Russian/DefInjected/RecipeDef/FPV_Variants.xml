@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_MakeKamikazeFiberAmmo.label>собрать осколочный FPV на оптоволокне</FPV_MakeKamikazeFiberAmmo.label>
+  <FPV_MakeKamikazeFiberAmmo.description>Собрать устойчивый к РЭБ FPV с осколочным эффектом CE.</FPV_MakeKamikazeFiberAmmo.description>
+  <FPV_MakeKamikazeFiberAmmo.jobString>Собирает осколочный FPV на оптоволокне.</FPV_MakeKamikazeFiberAmmo.jobString>
+  <FPV_MakeKamikazeFiberNoAmmo.label>собрать осколочный FPV на оптоволокне</FPV_MakeKamikazeFiberNoAmmo.label>
+  <FPV_MakeKamikazeFiberNoAmmo.description>Собрать устойчивый к РЭБ FPV с осколочным эффектом CE.</FPV_MakeKamikazeFiberNoAmmo.description>
+  <FPV_MakeKamikazeFiberNoAmmo.jobString>Собирает осколочный FPV на оптоволокне.</FPV_MakeKamikazeFiberNoAmmo.jobString>
+  <FPV_MakeIncendiaryAmmo.label>собрать зажигательный FPV</FPV_MakeIncendiaryAmmo.label>
+  <FPV_MakeIncendiaryAmmo.description>Собрать радиодрон с зажигательным эффектом CE.</FPV_MakeIncendiaryAmmo.description>
+  <FPV_MakeIncendiaryAmmo.jobString>Собирает зажигательный FPV.</FPV_MakeIncendiaryAmmo.jobString>
+  <FPV_MakeIncendiaryNoAmmo.label>собрать зажигательный FPV</FPV_MakeIncendiaryNoAmmo.label>
+  <FPV_MakeIncendiaryNoAmmo.description>Собрать радиодрон с зажигательным эффектом CE.</FPV_MakeIncendiaryNoAmmo.description>
+  <FPV_MakeIncendiaryNoAmmo.jobString>Собирает зажигательный FPV.</FPV_MakeIncendiaryNoAmmo.jobString>
+  <FPV_MakeIncendiaryFiberAmmo.label>собрать зажигательный FPV на оптоволокне</FPV_MakeIncendiaryFiberAmmo.label>
+  <FPV_MakeIncendiaryFiberAmmo.description>Собрать устойчивый к РЭБ FPV с зажигательным эффектом CE.</FPV_MakeIncendiaryFiberAmmo.description>
+  <FPV_MakeIncendiaryFiberAmmo.jobString>Собирает зажигательный FPV на оптоволокне.</FPV_MakeIncendiaryFiberAmmo.jobString>
+  <FPV_MakeIncendiaryFiberNoAmmo.label>собрать зажигательный FPV на оптоволокне</FPV_MakeIncendiaryFiberNoAmmo.label>
+  <FPV_MakeIncendiaryFiberNoAmmo.description>Собрать устойчивый к РЭБ FPV с зажигательным эффектом CE.</FPV_MakeIncendiaryFiberNoAmmo.description>
+  <FPV_MakeIncendiaryFiberNoAmmo.jobString>Собирает зажигательный FPV на оптоволокне.</FPV_MakeIncendiaryFiberNoAmmo.jobString>
+  <FPV_MakeJammerBackpack.label>собрать РЭБ-рюкзак</FPV_MakeJammerBackpack.label>
+  <FPV_MakeJammerBackpack.description>Собрать носимый рюкзак для подавления вражеских радиодронов.</FPV_MakeJammerBackpack.description>
+  <FPV_MakeJammerBackpack.jobString>Собирает РЭБ-рюкзак.</FPV_MakeJammerBackpack.jobString>
+</LanguageData>

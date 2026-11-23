@@ -68,6 +68,7 @@
 
   <RecipeDef ParentName="FPV_RecipeBase">
     <defName>FPV_MakeGoggles</defName>
+    <recipeUsers Inherit="False" />
     <label>make FPV goggles</label>
     <description>Assemble a reusable pair of FPV goggles.</description>
     <jobString>Assembling FPV goggles.</jobString>

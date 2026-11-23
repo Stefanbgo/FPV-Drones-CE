@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_EndJammed>Полёт аппарата {0} прерван вражеским РЭБ.</FPV_EndJammed>
+  <FPV_UI_EndFireDesc>Завершить полёт с зажигательным эффектом Combat Extended в подсвеченной зоне.</FPV_UI_EndFireDesc>
+</LanguageData>

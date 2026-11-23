@@ -21,4 +21,8 @@
   <FPV_UI_PickUp>Взять в комплект FPV: {0}</FPV_UI_PickUp>
   <FPV_UI_UnreachableItem>недоступно</FPV_UI_UnreachableItem>
   <FPV_UI_HeavyItem>слишком тяжело</FPV_UI_HeavyItem>
+  <FPV_UI_OperatorBusy>Оператор занят.</FPV_UI_OperatorBusy>
+  <FPV_UI_StopPiloting>Прервать пилотирование</FPV_UI_StopPiloting>
+  <FPV_UI_StopPilotingDesc>Завершить ручное управление аппаратом.</FPV_UI_StopPilotingDesc>
+  <FPV_UI_ConfirmStop>При прерывании управления аппарат взорвётся. Продолжить?</FPV_UI_ConfirmStop>
 </LanguageData>

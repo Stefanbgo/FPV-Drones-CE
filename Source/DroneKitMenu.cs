@@ -13,7 +13,7 @@ public sealed class FloatMenuOptionProvider_DroneKit : FloatMenuOptionProvider
 
     public override IEnumerable<FloatMenuOption> GetOptionsFor(Thing clickedThing, FloatMenuContext context)
     {
-        if (!DroneControl.IsDroneItem(clickedThing) && clickedThing.def.defName is not ("FPV_Controller" or "FPV_Goggles"))
+        if (!DroneControl.IsDroneItem(clickedThing) && clickedThing.def.defName != "FPV_Controller")
             yield break;
         var pawn = context.FirstSelectedPawn;
         if (!pawn.IsColonistPlayerControlled || !clickedThing.Spawned) yield break;

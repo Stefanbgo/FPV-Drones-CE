@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="ApparelCarryGearBase">
+    <defName>FPV_JammerBackpack</defName>
+    <label>FPV jammer backpack</label>
+    <description>Wear on the back to end hostile radio drone flights within 30 game cells while the wearer is active. Affected scouts land with their remaining charge. Affected strike drones resolve their own end-of-flight effect. Friendly and fiber-optic drones continue flying.</description>
+    <graphicData>
+      <texPath>Things/Apparel/Backpack/CE_Backpack</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <color>(106,216,221)</color>
+    </graphicData>
+    <recipeMaker IsNull="True" />
+    <generateAllowChance>0</generateAllowChance>
+    <statBases><MaxHitPoints>120</MaxHitPoints><Mass>4</Mass><Bulk>6</Bulk><MarketValue>230</MarketValue></statBases>
+    <apparel>
+      <countsAsClothingForNudity>false</countsAsClothingForNudity>
+      <bodyPartGroups><li>Shoulders</li></bodyPartGroups>
+      <layers><li>Backpack</li></layers>
+      <wornGraphicPath>Things/Apparel/Backpack/CE_Backpack</wornGraphicPath>
+      <wornGraphicData><renderUtilityAsPack>true</renderUtilityAsPack></wornGraphicData>
+    </apparel>
+    <modExtensions><li Class="CombatExtended.ApparelDefExtension"><isBackpack>true</isBackpack></li></modExtensions>
+  </ThingDef>
+
+  <RecipeDef ParentName="FPV_RecipeBase">
+    <defName>FPV_MakeJammerBackpack</defName>
+    <label>make FPV jammer backpack</label>
+    <description>Assemble a wearable radio drone countermeasure.</description>
+    <jobString>Assembling an FPV jammer backpack.</jobString>
+    <workAmount>5400</workAmount>
+    <ingredients>
+      <li><filter><thingDefs><li>Steel</li></thingDefs></filter><count>60</count></li>
+      <li><filter><thingDefs><li>ComponentIndustrial</li></thingDefs></filter><count>5</count></li>
+    </ingredients>
+    <fixedIngredientFilter><thingDefs><li>Steel</li><li>ComponentIndustrial</li></thingDefs></fixedIngredientFilter>
+    <products><FPV_JammerBackpack>1</FPV_JammerBackpack></products>
+  </RecipeDef>
+</Defs>

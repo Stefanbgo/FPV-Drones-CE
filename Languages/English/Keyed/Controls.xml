@@ -21,4 +21,8 @@
   <FPV_UI_PickUp>Pick up for FPV kit: {0}</FPV_UI_PickUp>
   <FPV_UI_UnreachableItem>unreachable</FPV_UI_UnreachableItem>
   <FPV_UI_HeavyItem>too heavy</FPV_UI_HeavyItem>
+  <FPV_UI_OperatorBusy>Operator busy.</FPV_UI_OperatorBusy>
+  <FPV_UI_StopPiloting>Stop piloting</FPV_UI_StopPiloting>
+  <FPV_UI_StopPilotingDesc>End manual control of this drone.</FPV_UI_StopPilotingDesc>
+  <FPV_UI_ConfirmStop>Stopping manual control will detonate this drone. Continue?</FPV_UI_ConfirmStop>
 </LanguageData>

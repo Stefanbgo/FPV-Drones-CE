@@ -3,7 +3,7 @@
   <name>FPV Drones for Combat Extended</name>
   <author>FPV Drones contributors</author>
   <packageId>stef.fpvdrones</packageId>
-  <modVersion>1.0.0</modVersion>
+  <modVersion>1.1.0</modVersion>
   <supportedVersions><li>1.7</li></supportedVersions>
   <modDependencies>
     <li>
@@ -18,5 +18,5 @@
     </li>
   </modDependencies>
   <loadAfter><li>brrainz.harmony</li><li>ceteam.combatextended</li></loadAfter>
-  <description>Remote FPV piloting for Combat Extended. Operate a disposable kamikaze drone or fly and recharge a reusable Mavik scout drone.</description>
+  <description>Remote FPV piloting for Combat Extended. Fly and recharge a Mavik scout, equip radio or fiber FPVs, and encounter enemy operators and jammer backpacks.</description>
 </ModMetaData>

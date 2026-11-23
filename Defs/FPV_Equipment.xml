@@ -17,32 +17,32 @@
   <ThingDef ParentName="FPV_DroneItemBase">
     <defName>FPV_Kamikaze</defName>
     <label>FPV kamikaze</label>
-    <description>A single-use first-person-view drone. It detonates whenever its flight ends.</description>
+    <description>Single-use radio FPV with the Combat Extended fragmentation effect. Equip an FPV controller in the primary slot to launch. A full battery lasts 30 seconds and the control radius is 100 cells. The drone detonates when its flight ends. A hostile jammer ends the flight early.</description>
     <graphicData>
       <texPath>FPVDrones/Kamikaze</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(0.86,0.86)</drawSize>
     </graphicData>
-    <statBases><Mass>3.2</Mass><MarketValue>145</MarketValue></statBases>
+    <statBases><Mass>3.2</Mass><Bulk>4</Bulk><MarketValue>145</MarketValue></statBases>
   </ThingDef>
 
   <ThingDef ParentName="FPV_DroneItemBase">
     <defName>FPV_Scout</defName>
     <label>Mavik scout drone</label>
-    <description>A reusable observation drone. Its battery can be recharged at an FPV charging station after landing.</description>
+    <description>Reusable radio scout. Equip an FPV controller in the primary slot to launch. A full battery lasts 80 seconds and the control radius is 120 cells. Choose return or land to recover and recharge it at an FPV charging station. A hostile jammer forces a recoverable landing.</description>
     <graphicData>
       <texPath>FPVDrones/Scout</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(0.86,0.86)</drawSize>
     </graphicData>
-    <statBases><Mass>1.8</Mass><MarketValue>165</MarketValue></statBases>
+    <statBases><Mass>1.8</Mass><Bulk>2.5</Bulk><MarketValue>165</MarketValue></statBases>
   </ThingDef>
 
   <ThingDef ParentName="FPV_EquipmentBase">
     <defName>FPV_Goggles</defName>
     <comps><li Class="FPVDrones.CompProperties_KitBinding" /></comps>
     <label>FPV goggles</label>
-    <description>Reusable goggles carried by the drone's pilot to view the flight camera.</description>
+    <description>An obsolete flight accessory retained from older kits. Modern controllers have a built-in display.</description>
     <graphicData>
       <texPath>FPVDrones/Goggles</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -53,9 +53,22 @@
 
   <ThingDef ParentName="FPV_EquipmentBase">
     <defName>FPV_Controller</defName>
-    <comps><li Class="FPVDrones.CompProperties_KitBinding" /></comps>
+    <equipmentType>Primary</equipmentType>
+    <tools>
+      <li Class="CombatExtended.ToolCE">
+        <label>casing</label>
+        <capacities><li>Blunt</li></capacities>
+        <power>2</power>
+        <cooldownTime>1.5</cooldownTime>
+        <armorPenetrationBlunt>1</armorPenetrationBlunt>
+      </li>
+    </tools>
+    <comps>
+      <li><compClass>CompEquippable</compClass></li>
+      <li Class="FPVDrones.CompProperties_KitBinding" />
+    </comps>
     <label>FPV controller</label>
-    <description>A reusable handheld controller for FPV drones.</description>
+    <description>Equip this reusable controller in the primary slot and carry a charged drone in inventory. The controller can handle one active flight at a time.</description>
     <graphicData>
       <texPath>FPVDrones/Controller</texPath>
       <graphicClass>Graphic_Single</graphicClass>
@@ -67,7 +80,7 @@
   <ThingDef ParentName="BuildingBase">
     <defName>FPV_Charger</defName>
     <label>FPV charging station</label>
-    <description>A powered docking pad for one Mavik scout drone. Any charge accumulated before removal stays with the drone.</description>
+    <description>Connect the station to a power grid and place one Mavik on the pad. Charging uses 100 W and takes 60 seconds from empty at normal speed. The drone keeps its charge when removed or during a power outage.</description>
     <thingClass>FPVDrones.Building_DroneCharger</thingClass>
     <graphicData>
       <texPath>FPVDrones/Charger</texPath>

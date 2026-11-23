@@ -34,6 +34,8 @@ public partial class FlyingDrone : Pawn
     private bool returnWarningSent;
     private bool reacquirePending;
     private bool flying;
+    private bool routeBlocked;
+    private bool strikingWall;
 
     public bool IsScout => def.defName == "FPV_ScoutAir";
     public int MaxRange => IsScout ? 120 : 100;
@@ -43,7 +45,7 @@ public partial class FlyingDrone : Pawn
     public bool FlightActive => flying;
 
     private int MaximumBatteryTicks => (IsScout ? 80 : 30) * TicksPerSecond;
-    private float CellDistancePerTick => (IsScout ? 4f : 5f) / TicksPerSecond;
+    private float CellDistancePerTick => (IsScout ? 4f : 6f) / TicksPerSecond;
 
     public override Vector3 DrawPos
     {
@@ -83,6 +85,17 @@ public partial class FlyingDrone : Pawn
             return;
         }
 
+        if (AttackTarget != null)
+        {
+            ClearAttackOrder();
+            append = false;
+            if (strikingWall) ClearSegment();
+        }
+        AssignWaypoint(cell, append);
+    }
+
+    private void AssignWaypoint(IntVec3 cell, bool append)
+    {
         if (!append)
         {
             waypoints.Clear();
@@ -91,6 +104,39 @@ public partial class FlyingDrone : Pawn
         }
 
         waypoints.Add(cell);
+        routeBlocked = false;
+        InvalidateRoutePreview();
+    }
+
+    internal bool CanReachRaidCell(IntVec3 cell)
+    {
+        IntVec3 start = segmentTo.IsValid && !strikingWall ? segmentTo : Position;
+        return flying && !Returning && TryFindPath(start, cell, out _, out float distance) &&
+            TicksNeeded(distance) <= batteryTicks;
+    }
+
+    internal bool TrySetRaidWaypoint(IntVec3 cell)
+    {
+        if (strikingWall)
+            return false;
+        if (waypoints.Count == 1 && waypoints[0] == cell)
+            return !routeBlocked;
+        if (!CanReachRaidCell(cell))
+            return false;
+        SetWaypoint(cell, false);
+        return true;
+    }
+
+    internal void EndRaidAtWall(IntVec3 wallCell)
+    {
+        if (IsScout || !Spawned || segmentTo.IsValid || !wallCell.InBounds(Map) ||
+            (Position - wallCell).LengthHorizontalSquared != 1 || !IsWallTransitCell(wallCell))
+            return;
+
+        waypoints.Clear();
+        ClearPath();
+        SetSegment(wallCell);
+        strikingWall = true;
     }
 
     public void ReturnHome()
@@ -204,10 +250,10 @@ public partial class FlyingDrone : Pawn
 
     public void FinishFlight(bool hit)
     {
-        CompleteFlight(hit, false);
+        CompleteFlight(hit, false, hit ? "FPV_EndHit" : IsScout ? "FPV_EndLanded" : "FPV_EndCommand");
     }
 
-    private void CompleteFlight(bool hit, bool earlyReturn)
+    private void CompleteFlight(bool hit, bool earlyReturn, string reason = "FPV_EndReturned", IntVec3? impactCell = null)
     {
         if (!flying || !Spawned)
         {
@@ -216,7 +262,9 @@ public partial class FlyingDrone : Pawn
 
         flying = false;
         Map map = Map;
-        IntVec3 cell = LastFree.IsValid ? LastFree : Position;
+        IntVec3 cell = impactCell ?? (LastFree.IsValid ? LastFree : Position);
+        bool showReason = Faction == Faction.OfPlayer || !cell.Fogged(map);
+        string aircraftLabel = LabelShortCap;
         ReleasePilot();
         if (!IsScout)
         {
@@ -239,6 +287,9 @@ public partial class FlyingDrone : Pawn
                 Messages.Message("FPV_ReturnLandedEarly".Translate(), placed, MessageTypeDefOf.NeutralEvent);
             }
         }
+
+        if (showReason)
+            Messages.Message(reason.Translate(aircraftLabel), new TargetInfo(cell, map), MessageTypeDefOf.NeutralEvent);
     }
 
     protected override void Tick()
@@ -255,7 +306,7 @@ public partial class FlyingDrone : Pawn
             // A direct collision in the depletion tick takes precedence over landing.
             if (now > depletedTick)
             {
-                CompleteFlight(false, Returning && LastFree != landingTarget);
+                CompleteFlight(false, Returning && LastFree != landingTarget, "FPV_EndDepleted");
             }
 
             return;
@@ -263,7 +314,13 @@ public partial class FlyingDrone : Pawn
 
         if (!Returning && !PilotAtControls())
         {
-            FinishFlight(false);
+            CompleteFlight(false, false, "FPV_EndPilotLost");
+            return;
+        }
+
+        if (DroneJamming.IsJammed(this))
+        {
+            CompleteFlight(false, Returning && LastFree != landingTarget, "FPV_EndJammed");
             return;
         }
 
@@ -274,6 +331,8 @@ public partial class FlyingDrone : Pawn
             return;
         }
 
+        UpdateAttackOrder(now);
+        if (!flying) return;
         AdvanceFlight(now);
         if (flying && IsScout && !Returning)
         {
@@ -309,7 +368,7 @@ public partial class FlyingDrone : Pawn
         float budget = CellDistancePerTick;
         while (budget > MovementEpsilon && flying)
         {
-            if (segmentTo.IsValid && !CanTravelStep(segmentFrom, segmentTo, CrossingWall))
+            if (segmentTo.IsValid && (strikingWall ? !IsWallTransitCell(segmentTo) : !CanTravelStep(segmentFrom, segmentTo, CrossingWall)))
             {
                 ClearSegment();
                 ClearPath();
@@ -326,13 +385,18 @@ public partial class FlyingDrone : Pawn
             segmentTravel += usedDistance;
             budget -= usedDistance;
 
-            if (!CrossingWall && segmentTravel * 2 >= distance)
+            if (!strikingWall && !CrossingWall && segmentTravel * 2 >= distance)
             {
                 ReachFreeCell(segmentTo);
             }
 
             if (segmentTravel + MovementEpsilon >= distance)
             {
+                if (strikingWall)
+                {
+                    CompleteFlight(false, false, "FPV_EndWall", segmentTo);
+                    return;
+                }
                 ReachFreeCell(segmentTo);
                 ClearSegment();
                 if (reacquirePending && Returning)
@@ -391,6 +455,7 @@ public partial class FlyingDrone : Pawn
             if (now < nextRouteCheck ||
                 !TryFindPath(Position, waypoints[0], out List<IntVec3> route, out _))
             {
+                routeBlocked = true;
                 if (now >= nextRouteCheck)
                 {
                     nextRouteCheck = now + RouteRetryTicks;
@@ -455,26 +520,22 @@ public partial class FlyingDrone : Pawn
         segmentFrom = IntVec3.Invalid;
         segmentTo = IntVec3.Invalid;
         segmentTravel = 0f;
+        strikingWall = false;
     }
 
     private void UsePath(List<IntVec3> route)
     {
         path = route;
         pathIndex = 0;
+        routeBlocked = false;
+        InvalidateRoutePreview();
     }
 
     private void ClearPath()
     {
         path.Clear();
         pathIndex = 0;
-    }
-
-    public void DrawFlightOverlays()
-    {
-        if (Returning && landingTarget.IsValid)
-        {
-            GenDraw.DrawTargetHighlightWithLayer(landingTarget, AltitudeLayer.MetaOverlays);
-        }
+        InvalidateRoutePreview();
     }
 
     public override void ExposeData()
@@ -498,9 +559,12 @@ public partial class FlyingDrone : Pawn
         Scribe_Values.Look(ref nextWarningCheck, "fpvNextWarningCheck");
         Scribe_Values.Look(ref returnWarningSent, "fpvReturnWarningSent");
         Scribe_Values.Look(ref reacquirePending, "fpvReacquirePending");
+        Scribe_Values.Look(ref routeBlocked, "fpvRouteBlocked");
+        Scribe_Values.Look(ref strikingWall, "fpvStrikingWall");
         Scribe_Values.Look(ref flying, "fpvFlying");
         Scribe_Collections.Look(ref waypoints, "fpvWaypoints", LookMode.Value);
         Scribe_Collections.Look(ref path, "fpvPath", LookMode.Value);
+        ExposeAttackOrder();
         if (Scribe.mode == LoadSaveMode.PostLoadInit)
         {
             waypoints ??= new List<IntVec3>();

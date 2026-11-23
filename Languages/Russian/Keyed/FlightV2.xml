@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_EndHit>{0}: сбит попаданием.</FPV_EndHit>
+  <FPV_EndCommand>{0}: подрыв по команде.</FPV_EndCommand>
+  <FPV_EndLanded>{0}: посадка.</FPV_EndLanded>
+  <FPV_EndReturned>{0}: посадка после возврата.</FPV_EndReturned>
+  <FPV_EndDepleted>{0}: заряд исчерпан.</FPV_EndDepleted>
+  <FPV_EndPilotLost>{0}: потеряно управление.</FPV_EndPilotLost>
+  <FPV_EndWall>{0}: подрыв у выбранной стены.</FPV_EndWall>
+  <FPV_EndAttack>{0}: подрыв у назначенной цели.</FPV_EndAttack>
+  <FPV_OrderUnavailable>Выбранные дроны не могут выполнить этот приказ.</FPV_OrderUnavailable>
+  <FPV_AttackOrderLost>Дрон потерял назначенную цель и ждёт приказа на полёт.</FPV_AttackOrderLost>
+  <FPV_UI_AttackTarget>Цель атаки: {0}</FPV_UI_AttackTarget>
+  <FPV_UI_BlockedRoute>Маршрут перекрыт. Выбери другую точку.</FPV_UI_BlockedRoute>
+</LanguageData>

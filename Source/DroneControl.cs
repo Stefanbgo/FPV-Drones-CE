@@ -18,18 +18,32 @@ internal static class InputPatches
 public static class DroneControl
 {
     internal static JobDef PilotJob => DefDatabase<JobDef>.GetNamed("FPV_Pilot");
-    internal static bool IsDroneItem(Thing t) => t?.def.defName is "FPV_Kamikaze" or "FPV_Scout";
-    internal static Thing AvailableGear(Pawn pawn, string name)
+    internal static bool IsDroneItem(Thing t) => DroneVariants.IsDroneItem(t);
+    internal static Thing EquippedController(Pawn pawn)
     {
-        return pawn?.inventory?.innerContainer.FirstOrDefault(item =>
-            item.def.defName == name && item.TryGetComp<CompKitBinding>().AvailableTo(pawn));
+        var controller = pawn?.equipment?.Primary;
+        return controller?.def.defName == "FPV_Controller" &&
+            controller.TryGetComp<CompKitBinding>()?.AvailableTo(pawn) == true ? controller : null;
     }
 
-    public static bool HasKit(Pawn pawn) => AvailableGear(pawn, "FPV_Goggles") != null &&
-        AvailableGear(pawn, "FPV_Controller") != null;
+    public static bool HasKit(Pawn pawn) => EquippedController(pawn) != null;
 
     public static bool IsPiloting(Pawn pawn, FlyingDrone drone) =>
         pawn?.CurJobDef == PilotJob && pawn.CurJob.targetB.Thing == drone;
+
+    internal static bool ManualPilot(Pawn pawn) =>
+        pawn?.CurJobDef == PilotJob && pawn.CurJob.targetB.Thing is FlyingDrone { Returning: false, FlightActive: true };
+
+    [HarmonyPatch(typeof(Pawn_JobTracker), nameof(Pawn_JobTracker.TryTakeOrderedJob))]
+    private static class ProtectPilotMove
+    {
+        private static bool Prefix(Pawn ___pawn, Job job)
+        {
+            if (job?.def != JobDefOf.Goto || !ManualPilot(___pawn)) return true;
+            Messages.Message("FPV_UI_OperatorBusy".Translate(), ___pawn, MessageTypeDefOf.RejectInput, false);
+            return false;
+        }
+    }
 
     public static bool StartPiloting(Pawn pawn, FlyingDrone drone)
     {
@@ -49,25 +63,27 @@ public static class DroneControl
 
     public static FlyingDrone Launch(Pawn pawn, Thing item)
     {
-        if (pawn?.Spawned != true || pawn.DeadOrDowned || pawn.InMentalState || !pawn.Drafted ||
+        if (pawn?.Spawned != true || pawn.DeadOrDowned || pawn.InMentalState || pawn.Faction == Faction.OfPlayer && !pawn.Drafted ||
             !HasKit(pawn) || !IsDroneItem(item) || !pawn.inventory.innerContainer.Contains(item) ||
             ActiveDrone(pawn) != null) return null;
         var charge = item.TryGetComp<CompDroneBattery>()?.Charge01 ?? 0f;
         if (charge <= 0f) return null;
-        var kind = DefDatabase<PawnKindDef>.GetNamed(item.def.defName + "Air");
+        var kind = DroneVariants.AirKindFor(item);
         var drone = (FlyingDrone)PawnGenerator.GeneratePawn(kind, pawn.Faction);
         GenSpawn.Spawn(drone, pawn.Position, pawn.Map);
         drone.BeginFlight(pawn, charge);
         drone.BindKit(pawn);
         if (pawn.CurJobDef == PilotJob && pawn.CurJob.targetB.Thing == item)
+        {
             pawn.CurJob.targetB = drone;
+        }
         else if (!StartPiloting(pawn, drone))
         {
             drone.Destroy();
             return null;
         }
         item.Destroy();
-        CameraJumper.TryJumpAndSelect(drone);
+        if (pawn.Faction == Faction.OfPlayer) CameraJumper.TryJumpAndSelect(drone);
         return drone;
     }
 
@@ -113,6 +129,19 @@ public static class DroneControl
             {
                 yield return Command("FPV_UI_ChooseDrone".Translate(), "FPV_UI_ChooseDroneDesc".Translate(),
                     () => CameraJumper.TryJumpAndSelect(active), active.ControlIcon);
+                if (ManualPilot(p))
+                {
+                    yield return Command("FPV_UI_StopPiloting".Translate(), "FPV_UI_StopPilotingDesc".Translate(),
+                        () =>
+                        {
+                            void Stop()
+                            {
+                                if (active.Spawned && IsPiloting(p, active)) active.FinishFlight(false);
+                            }
+                            if (active.IsScout) Stop();
+                            else Find.WindowStack.Add(Dialog_MessageBox.CreateConfirmation("FPV_UI_ConfirmStop".Translate(), Stop));
+                        }, active.ControlIcon);
+                }
                 yield break;
             }
             if (!HasKit(p)) yield break;
@@ -137,8 +166,15 @@ public static class DroneControl
         {
             var ev = Event.current;
             if (ev.type != EventType.MouseDown || ev.button != 1 ||
-                __instance.SingleSelectedThing is not FlyingDrone drone) return true;
-            if (!drone.Returning) drone.SetWaypoint(UI.MouseCell(), ev.shift);
+                !__instance.SelectedObjects.OfType<FlyingDrone>().Any(DroneFlightOrders.IsPlayerFlight)) return true;
+            if (DroneGroups.IsPointerInRoster(Find.CurrentMap, ev.mousePosition))
+            {
+                ev.Use();
+                return false;
+            }
+            var cell = UI.MouseCell();
+            DroneFlightOrders.Issue(__instance, cell, DroneFlightOrders.TargetAt(cell, Find.CurrentMap), ev.shift);
+            if (__instance.SelectedObjects.Any(selected => selected is not FlyingDrone)) return true;
             ev.Use();
             return false;
         }

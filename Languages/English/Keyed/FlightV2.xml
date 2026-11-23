@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <FPV_EndHit>{0}: destroyed by a hit.</FPV_EndHit>
+  <FPV_EndCommand>{0}: detonated by command.</FPV_EndCommand>
+  <FPV_EndLanded>{0}: landed.</FPV_EndLanded>
+  <FPV_EndReturned>{0}: return flight ended in landing.</FPV_EndReturned>
+  <FPV_EndDepleted>{0}: battery depleted.</FPV_EndDepleted>
+  <FPV_EndPilotLost>{0}: lost the operator.</FPV_EndPilotLost>
+  <FPV_EndWall>{0}: detonated at the selected wall.</FPV_EndWall>
+  <FPV_EndAttack>{0}: detonated at its assigned target.</FPV_EndAttack>
+  <FPV_OrderUnavailable>The selected drones cannot carry out this order.</FPV_OrderUnavailable>
+  <FPV_AttackOrderLost>The drone lost its assigned target and is awaiting a flight order.</FPV_AttackOrderLost>
+  <FPV_UI_AttackTarget>Attack target: {0}</FPV_UI_AttackTarget>
+  <FPV_UI_BlockedRoute>Route blocked. Choose another point.</FPV_UI_BlockedRoute>
+</LanguageData>

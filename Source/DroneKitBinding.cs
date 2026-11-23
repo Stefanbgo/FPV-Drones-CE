@@ -28,8 +28,8 @@ public partial class FlyingDrone
 
     internal void BindKit(Pawn pawn)
     {
-        ReplaceItem(ref boundGoggles, DroneControl.AvailableGear(pawn, "FPV_Goggles"));
-        ReplaceItem(ref boundController, DroneControl.AvailableGear(pawn, "FPV_Controller"));
+        ReplaceItem(ref boundGoggles, null);
+        ReplaceItem(ref boundController, DroneControl.EquippedController(pawn));
     }
 
     private void ReplaceItem(ref Thing previous, Thing next)
@@ -43,9 +43,7 @@ public partial class FlyingDrone
     private bool HasBoundKit()
     {
         // A flight saved by an earlier build acquires its existing operator's gear on first tick.
-        if (boundGoggles == null && boundController == null) BindKit(Operator);
-        var items = Operator?.inventory?.innerContainer;
-        return items != null && boundGoggles != null && boundController != null &&
-            items.Contains(boundGoggles) && items.Contains(boundController);
+        if (boundController == null) BindKit(Operator);
+        return boundController != null && boundController == DroneControl.EquippedController(Operator);
     }
 }

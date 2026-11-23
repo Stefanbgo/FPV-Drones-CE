@@ -104,8 +104,14 @@ public sealed class Building_DroneCharger : Building_Storage
 
 public sealed class RecipeWorker_DroneAmmoMode : RecipeWorker
 {
-    internal bool MatchesCurrentMode =>
-        (recipe.defName == "FPV_MakeKamikazeAmmo") == CombatExtended.Controller.settings.EnableAmmoSystem;
+    internal bool MatchesCurrentMode
+    {
+        get
+        {
+            bool requiresAmmo = !recipe.defName.EndsWith("NoAmmo", StringComparison.Ordinal);
+            return requiresAmmo == CombatExtended.Controller.settings.EnableAmmoSystem;
+        }
+    }
 
     public override bool AvailableOnNow(Thing thing, BodyPartRecord part = null)
     {

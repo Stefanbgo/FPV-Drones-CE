@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <ThingDef ParentName="FPV_DroneItemBase">
+    <defName>FPV_KamikazeFiber</defName>
+    <label>fiber-optic fragmentation FPV</label>
+    <description>Single-use fragmentation FPV for Combat Extended. Equip an FPV controller in the primary slot to launch. The drone flies for 30 seconds within 100 cells of its operator and detonates when the flight ends. Flight continues in a hostile jammer field.</description>
+    <graphicData>
+      <texPath>FPVDrones/Kamikaze</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(0.86,0.86)</drawSize>
+      <color>(145,220,255)</color>
+    </graphicData>
+    <statBases><Mass>3.5</Mass><Bulk>4</Bulk><MarketValue>175</MarketValue></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_DroneItemBase">
+    <defName>FPV_Incendiary</defName>
+    <label>incendiary FPV</label>
+    <description>Single-use radio FPV with the Combat Extended Molotov effect. Equip an FPV controller in the primary slot to launch. The drone flies for 30 seconds within 100 cells of its operator and applies the fire effect when the flight ends. A hostile jammer ends the flight early.</description>
+    <graphicData>
+      <texPath>FPVDrones/Kamikaze</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(0.86,0.86)</drawSize>
+      <color>(255,134,73)</color>
+    </graphicData>
+    <statBases><Mass>3.2</Mass><Bulk>4</Bulk><MarketValue>145</MarketValue></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_DroneItemBase">
+    <defName>FPV_IncendiaryFiber</defName>
+    <label>fiber-optic incendiary FPV</label>
+    <description>Single-use fiber-optic FPV with the Combat Extended Molotov effect. Equip an FPV controller in the primary slot to launch. The drone flies for 30 seconds within 100 cells of its operator and applies the fire effect when the flight ends. Flight continues in a hostile jammer field.</description>
+    <graphicData>
+      <texPath>FPVDrones/Kamikaze</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <drawSize>(0.86,0.86)</drawSize>
+      <color>(227,128,241)</color>
+    </graphicData>
+    <statBases><Mass>3.5</Mass><Bulk>4</Bulk><MarketValue>175</MarketValue></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_AirframeBase">
+    <defName>FPV_KamikazeFiberAir</defName>
+    <label>fiber-optic fragmentation FPV</label>
+    <description>Fiber-optic fragmentation FPV in flight.</description>
+    <statBases><MoveSpeed>6</MoveSpeed></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_AirframeBase">
+    <defName>FPV_IncendiaryAir</defName>
+    <label>incendiary FPV</label>
+    <description>Incendiary FPV in flight.</description>
+    <statBases><MoveSpeed>6</MoveSpeed></statBases>
+  </ThingDef>
+
+  <ThingDef ParentName="FPV_AirframeBase">
+    <defName>FPV_IncendiaryFiberAir</defName>
+    <label>fiber-optic incendiary FPV</label>
+    <description>Fiber-optic incendiary FPV in flight.</description>
+    <statBases><MoveSpeed>6</MoveSpeed></statBases>
+  </ThingDef>
+
+  <PawnKindDef Name="FPV_StrikeVariantKind" Abstract="True">
+    <combatPower>20</combatPower>
+    <canStrip>false</canStrip>
+  </PawnKindDef>
+
+  <PawnKindDef ParentName="FPV_StrikeVariantKind">
+    <defName>FPV_KamikazeFiberAir</defName>
+    <label>fiber-optic fragmentation FPV</label>
+    <race>FPV_KamikazeFiberAir</race>
+    <lifeStages><li><bodyGraphicData><texPath>FPVDrones/KamikazeAir</texPath><drawSize>(0.9,0.9)</drawSize><color>(145,220,255)</color></bodyGraphicData></li></lifeStages>
+  </PawnKindDef>
+
+  <PawnKindDef ParentName="FPV_StrikeVariantKind">
+    <defName>FPV_IncendiaryAir</defName>
+    <label>incendiary FPV</label>
+    <race>FPV_IncendiaryAir</race>
+    <lifeStages><li><bodyGraphicData><texPath>FPVDrones/KamikazeAir</texPath><drawSize>(0.9,0.9)</drawSize><color>(255,134,73)</color></bodyGraphicData></li></lifeStages>
+  </PawnKindDef>
+
+  <PawnKindDef ParentName="FPV_StrikeVariantKind">
+    <defName>FPV_IncendiaryFiberAir</defName>
+    <label>fiber-optic incendiary FPV</label>
+    <race>FPV_IncendiaryFiberAir</race>
+    <lifeStages><li><bodyGraphicData><texPath>FPVDrones/KamikazeAir</texPath><drawSize>(0.9,0.9)</drawSize><color>(227,128,241)</color></bodyGraphicData></li></lifeStages>
+  </PawnKindDef>
+</Defs>

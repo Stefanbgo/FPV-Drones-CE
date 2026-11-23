@@ -13,6 +13,7 @@
     <Reference Include="Assembly-CSharp" HintPath="$(RimWorldDir)/Assembly-CSharp.dll" Private="false"/>
     <Reference Include="UnityStubs" HintPath="$(RimWorldDir)/UnityStubs.dll" Private="false"/>
     <Reference Include="Waylith.UnityCompat" HintPath="$(RimWorldDir)/Waylith.UnityCompat.dll" Private="false"/>
+    <Reference Include="Waylith" HintPath="$(RimWorldDir)/Waylith.dll" Private="false"/>
     <Reference Include="0Harmony" HintPath="$(WorkshopDir)/2009463077/1.7/Assemblies/0Harmony.dll" Private="false"/>
     <Reference Include="CombatExtended" HintPath="$(WorkshopDir)/2890901044/Assemblies/CombatExtended.dll" Private="false"/>
   </ItemGroup>
