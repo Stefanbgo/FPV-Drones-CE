@@ -17,6 +17,7 @@
     <defName>FPV_DetonateSelected</defName>
     <label>Detonate selected FPV drones</label>
     <category>FPV_DroneControls</category>
-    <defaultKeyCodeA>Delete</defaultKeyCodeA>
+    <defaultKeyCodeA>J</defaultKeyCodeA>
+    <ignoreConflictsWith><li>Misc5</li></ignoreConflictsWith>
   </KeyBindingDef>
 </Defs>
