@@ -89,12 +89,30 @@ public sealed class DroneGroups : MapComponent
 
         float width = expanded ? 218f : 138f;
         float x = UI.screenWidth - width - 12f;
-        float y = 86f;
+        const float top = 86f;
+        float y = top;
+        float overlayLeft = UI.screenWidth;
+        var windows = Find.WindowStack;
+        for (int i = 0; i < windows.Count; i++)
+        {
+            Rect overlay = windows[i].windowRect;
+            if (overlay.yMin < 32f && overlay.yMax <= UI.screenHeight / 2f + 16f &&
+                overlay.xMax > x && overlay.xMin < x + width)
+            {
+                y = Mathf.Max(y, overlay.yMax + 8f);
+                overlayLeft = Mathf.Min(overlayLeft, overlay.xMin);
+            }
+        }
+        if (y > UI.screenHeight / 3f && overlayLeft >= width + 20f)
+        {
+            x = overlayLeft - width - 8f;
+            y = top;
+        }
         var toggle = new Rect(x, y, width, 28f);
         rosterBounds = toggle;
         if (Widgets.ButtonText(toggle, "FPV_GroupRoster".Translate(visibleFlights.Count))) expanded = !expanded;
         if (!expanded) return;
-        float height = Mathf.Min(visibleFlights.Count * 26f, Mathf.Max(48f, Mathf.Min(234f, UI.screenHeight - 270f)));
+        float height = Mathf.Min(visibleFlights.Count * 26f, Mathf.Clamp(UI.screenHeight - y - 200f, 48f, 234f));
         var panel = new Rect(x, y + 29f, width, height + 42f);
         rosterBounds = new Rect(x, y, width, panel.yMax - y);
         Widgets.DrawWindowBackground(panel);
