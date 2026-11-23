@@ -5,9 +5,8 @@
     <label>FPV jammer backpack</label>
     <description>Wear on the back to end hostile radio drone flights within 30 game cells while the wearer is active. Affected scouts land with their remaining charge. Affected strike drones resolve their own end-of-flight effect. Friendly and fiber-optic drones continue flying.</description>
     <graphicData>
-      <texPath>Things/Apparel/Backpack/CE_Backpack</texPath>
+      <texPath>FPVDrones/JammerBackpack</texPath>
       <graphicClass>Graphic_Single</graphicClass>
-      <color>(106,216,221)</color>
     </graphicData>
     <recipeMaker IsNull="True" />
     <generateAllowChance>0</generateAllowChance>
@@ -16,7 +15,7 @@
       <countsAsClothingForNudity>false</countsAsClothingForNudity>
       <bodyPartGroups><li>Shoulders</li></bodyPartGroups>
       <layers><li>Backpack</li></layers>
-      <wornGraphicPath>Things/Apparel/Backpack/CE_Backpack</wornGraphicPath>
+      <wornGraphicPath>FPVDrones/JammerBackpack</wornGraphicPath>
       <wornGraphicData><renderUtilityAsPack>true</renderUtilityAsPack></wornGraphicData>
     </apparel>
     <modExtensions><li Class="CombatExtended.ApparelDefExtension"><isBackpack>true</isBackpack></li></modExtensions>

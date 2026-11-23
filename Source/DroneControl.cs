@@ -204,7 +204,10 @@ public class JobDriver_Pilot : JobDriver
         yield return Toils_Goto.GotoCell(TargetIndex.A, PathEndMode.OnCell);
         yield return Toils_General.Do(() =>
         {
-            if (job.targetB.Thing is not FlyingDrone && DroneControl.Launch(pawn, job.targetB.Thing) == null)
+            Thing item = job.targetB.Thing;
+            if (item is FlyingDrone) return;
+            if ((pawn.Faction != Faction.OfPlayer && !Map.GetComponent<RaidDroneOperators>().MayLaunch(pawn, item)) ||
+                DroneControl.Launch(pawn, item) == null)
                 EndJobWith(JobCondition.Incompletable);
         });
         var hold = ToilMaker.MakeToil("PilotDrone");

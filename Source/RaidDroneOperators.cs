@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CombatExtended;
 using HarmonyLib;
 using LudeonTK;
 using RimWorld;
@@ -15,7 +16,10 @@ public sealed class RaidDroneOperators : MapComponent
     private const int MaxDronesPerOperator = 4;
     private const int MinimumRaidPoints = 1000;
     private const int PointsPerExtraOperator = 650;
-    private const int ThinkInterval = 30;
+    private const int ThinkInterval = 10;
+    private const int LaunchSearchRadius = 10;
+    private const int LaunchRetryTicks = 60;
+    private const float CoverPreference = 18f;
     private const int DroneRangeSquared = 100 * 100;
     private const string ControllerName = "FPV_Controller";
     private static readonly string[] AlternateDrones = { "FPV_KamikazeFiber", "FPV_Incendiary", "FPV_IncendiaryFiber" };
@@ -34,6 +38,13 @@ public sealed class RaidDroneOperators : MapComponent
     internal static bool AdvancedHostileFaction(Faction faction) =>
         faction != null && faction.def.humanlikeFaction && faction.def.techLevel >= TechLevel.Industrial &&
         faction.HostileTo(Faction.OfPlayer);
+
+    internal static bool ShouldPrioritizeLaunch(Pawn pawn)
+    {
+        var assignment = pawn.Map?.GetComponent<RaidDroneOperators>()?.pilots.FirstOrDefault(pilot => pilot.Pawn == pawn);
+        return assignment != null && CanPrepareLaunch(pawn) && Find.TickManager.TicksGame >= assignment.RetryLaunchAt &&
+            (pawn.CurJobDef == DroneControl.PilotJob || pawn.inventory.innerContainer.Any(IsUsableStrikeDrone));
+    }
 
     internal void AssignRaidRoles(IncidentParms parms, List<Pawn> raiders)
     {
@@ -110,25 +121,33 @@ public sealed class RaidDroneOperators : MapComponent
             return true;
         }
 
-        var stock = pilot.inventory.innerContainer.Where(item => DroneVariants.IsDroneItem(item) && item.def.defName != "FPV_Scout").ToList();
+        var stock = pilot.inventory.innerContainer.Where(IsUsableStrikeDrone).ToList();
         if (stock.Count == 0)
         {
             EquipBackup(assignment);
+            CancelLaunchApproach(assignment);
             return pilot.equipment.Primary?.def.defName == ControllerName;
         }
 
-        DutyDef duty = pilot.mindState?.duty?.def;
-        if (duty != DutyDefOf.AssaultColony && duty != DutyDefOf.Breaching && duty != DutyDefOf.Sapper && duty != DutyDefOf.AssaultThing)
+        if (!CanPrepareLaunch(pilot))
         {
             EquipBackup(assignment);
+            CancelLaunchApproach(assignment);
             return true;
         }
 
-        var goal = SelectGoal(pilot, null, assignment.Objective);
+        if (pilot.CurJobDef == DroneControl.PilotJob && pilot.CurJob.targetB.Thing is { } planned &&
+            pilot.inventory.innerContainer.Contains(planned) && IsUsableStrikeDrone(planned))
+            return true;
+
+        if (now < assignment.RetryLaunchAt || !pilot.jobs.IsCurrentJobPlayerInterruptible() ||
+            pilot.CurJobDef?.forceCompleteBeforeNextJob == true)
+            return true;
+
+        var goal = SelectGoal(pilot, null, assignment);
         if (!goal.Cell.IsValid)
         {
-            assignment.LaunchCell = IntVec3.Invalid;
-            EquipBackup(assignment);
+            DelayLaunch(assignment, now);
             return true;
         }
 
@@ -136,32 +155,74 @@ public sealed class RaidDroneOperators : MapComponent
             ? stock.FirstOrDefault(drone => !DroneVariants.IsIncendiary(drone.def)) ?? stock[0]
             : stock[0];
         var launchCell = FindLaunchCell(pilot, item.def, goal.Cell, assignment.LaunchCell);
-        if (!launchCell.IsValid) return true;
-        assignment.LaunchCell = launchCell;
-        assignment.Objective = goal.Target;
-        if (pilot.Position != launchCell)
+        if (!launchCell.IsValid || !EquipController(pilot))
         {
-            if (pilot.CurJobDef != JobDefOf.Goto || pilot.CurJob.targetA.Cell != launchCell)
-                pilot.jobs.StartJob(JobMaker.MakeJob(JobDefOf.Goto, launchCell), JobCondition.InterruptForced, tag: JobTag.Misc);
+            DelayLaunch(assignment, now);
             return true;
         }
 
-        if (!EquipController(pilot)) return true;
-        if (DroneControl.Launch(pilot, item) is { } launched)
+        assignment.LaunchCell = launchCell;
+        assignment.Objective = goal.Target;
+        assignment.ObjectiveCell = goal.Cell;
+        assignment.Waypoint = IntVec3.Invalid;
+        var launch = JobMaker.MakeJob(DroneControl.PilotJob, launchCell, item);
+        launch.playerForced = true;
+        pilot.jobs.ClearQueuedJobs();
+        pilot.jobs.StartJob(launch, JobCondition.InterruptForced, tag: JobTag.Misc);
+        return true;
+    }
+
+    internal bool MayLaunch(Pawn pilot, Thing item)
+    {
+        var assignment = pilots.FirstOrDefault(entry => entry.Pawn == pilot);
+        if (assignment == null) return true;
+        if (!CanPrepareLaunch(pilot) || !IsUsableStrikeDrone(item)) return false;
+        var goal = SelectGoal(pilot, null, assignment);
+        if (!goal.Cell.IsValid || !LaunchCellSafe(pilot, item.def, goal.Cell, pilot.Position))
         {
-            assignment.LaunchCell = IntVec3.Invalid;
-            assignment.Waypoint = IntVec3.Invalid;
-            GuideDrone(assignment, launched);
+            DelayLaunch(assignment, Find.TickManager.TicksGame);
+            return false;
         }
 
+        assignment.Objective = goal.Target;
+        assignment.ObjectiveCell = goal.Cell;
+        assignment.LaunchCell = IntVec3.Invalid;
         return true;
+    }
+
+    private static bool CanPrepareLaunch(Pawn pilot)
+    {
+        DutyDef duty = pilot.mindState?.duty?.def;
+        return (duty == DutyDefOf.AssaultColony || duty == DutyDefOf.Breaching || duty == DutyDefOf.Sapper ||
+            duty == DutyDefOf.AssaultThing) && !pilot.IsBurning() &&
+            pilot.CurJobDef != CE_JobDefOf.RunForCover && pilot.CurJobDef != CE_JobDefOf.HunkerDown &&
+            pilot.CurJobDef != JobDefOf.Flee;
+    }
+
+    private static bool IsUsableStrikeDrone(Thing item) => DroneVariants.IsDroneItem(item) &&
+        item.def.defName != "FPV_Scout" && item.TryGetComp<CompDroneBattery>()?.Charge01 > 0f;
+
+    private static void DelayLaunch(RaidPilot assignment, int now)
+    {
+        assignment.LaunchCell = IntVec3.Invalid;
+        assignment.RetryLaunchAt = now + LaunchRetryTicks;
+        EquipBackup(assignment);
+    }
+
+    private static void CancelLaunchApproach(RaidPilot assignment)
+    {
+        assignment.LaunchCell = IntVec3.Invalid;
+        if (assignment.Pawn.CurJobDef == DroneControl.PilotJob && assignment.Pawn.CurJob.targetB.Thing is not FlyingDrone)
+            assignment.Pawn.jobs.EndCurrentJob(JobCondition.InterruptForced);
     }
 
     private void GuideDrone(RaidPilot assignment, FlyingDrone aircraft)
     {
-        var goal = SelectGoal(assignment.Pawn, aircraft, assignment.Objective);
+        if (aircraft.CrossingWall) return;
+        var goal = SelectGoal(assignment.Pawn, aircraft, assignment);
         assignment.Objective = goal.Target;
-        if (!goal.Cell.IsValid || aircraft.CrossingWall) return;
+        assignment.ObjectiveCell = goal.Cell;
+        if (!goal.Cell.IsValid) return;
 
         if (aircraft.Position != goal.Cell)
         {
@@ -176,10 +237,19 @@ public sealed class RaidDroneOperators : MapComponent
         else aircraft.FinishFlight(false);
     }
 
-    private (Thing Target, IntVec3 Cell) SelectGoal(Pawn pilot, FlyingDrone aircraft, Thing previous)
+    private (Thing Target, IntVec3 Cell) SelectGoal(Pawn pilot, FlyingDrone aircraft, RaidPilot assignment)
     {
+        Thing previous = assignment.Objective;
         IntVec3 origin = aircraft?.Position ?? pilot.Position;
         IntVec3 anchor = aircraft?.HomeAnchor ?? pilot.Position;
+        IntVec3 previousCell = assignment.ObjectiveCell;
+        if (previous is Building { Spawned: true } breachWall && breachWall.Map == map &&
+            breachWall.Faction == Faction.OfPlayer && breachWall.def.IsWall &&
+            breachWall.Position.DistanceToSquared(anchor) <= DroneRangeSquared &&
+            WallApproachValid(previousCell, breachWall) &&
+            (aircraft == null || aircraft.CanReachRaidCell(previousCell)))
+            return (breachWall, previousCell);
+
         foreach (Pawn target in map.mapPawns.AllPawnsSpawned.Where(target => target.Faction == Faction.OfPlayer &&
             target is not FlyingDrone && !target.DeadOrDowned && target.Position.DistanceToSquared(anchor) <= DroneRangeSquared)
             .OrderBy(target => target != previous).ThenBy(target => target.Position.DistanceToSquared(origin)))
@@ -188,16 +258,23 @@ public sealed class RaidDroneOperators : MapComponent
                 (aircraft == null || aircraft.CanReachRaidCell(target.Position))) return (target, target.Position);
         }
 
+        // A covered operator can launch towards a last sighting. The drone must see the pawn to follow its new position.
+        if (previous is Pawn { Spawned: true, DeadOrDowned: false } lastTarget && lastTarget.Map == map &&
+            lastTarget.Faction == Faction.OfPlayer && previousCell.InBounds(map) &&
+            previousCell.DistanceToSquared(anchor) <= DroneRangeSquared &&
+            (aircraft == null || origin != previousCell && aircraft.CanReachRaidCell(previousCell)))
+            return (lastTarget, previousCell);
+
         var walls = map.listerBuildings.allBuildingsColonist.Where(wall => wall.Spawned && wall.def.IsWall &&
                 wall.Position.DistanceToSquared(anchor) <= DroneRangeSquared)
             .OrderBy(wall => wall != previous).ThenBy(wall => wall.Position.DistanceToSquared(origin));
         foreach (Building wall in walls)
         {
-            foreach (IntVec3 offset in GenAdj.CardinalDirections)
+            foreach (IntVec3 approach in GenAdj.CardinalDirections.Select(offset => wall.Position + offset)
+                .OrderBy(cell => cell.DistanceToSquared(origin)))
             {
-                IntVec3 approach = wall.Position + offset;
-                if (!approach.InBounds(map) || approach.Roofed(map) || !approach.Walkable(map) || approach.GetEdifice(map) != null ||
-                    !GenSight.LineOfSight(origin, approach, map, skipFirstCell: true) ||
+                if (!WallApproachValid(approach, wall) ||
+                    (wall != previous && !GenSight.LineOfSight(origin, approach, map, skipFirstCell: true)) ||
                     (aircraft != null && !aircraft.CanReachRaidCell(approach))) continue;
                 return (wall, approach);
             }
@@ -206,22 +283,38 @@ public sealed class RaidDroneOperators : MapComponent
         return (null, IntVec3.Invalid);
     }
 
+    private bool WallApproachValid(IntVec3 cell, Building wall) => cell.InBounds(map) &&
+        cell.DistanceToSquared(wall.Position) == 1 && !cell.Roofed(map) && cell.Walkable(map) && cell.GetEdifice(map) == null;
+
     private IntVec3 FindLaunchCell(Pawn pilot, ThingDef item, IntVec3 goal, IntVec3 previous)
     {
-        if (LaunchCellSafe(pilot, item, goal, previous)) return previous;
-        if (LaunchCellSafe(pilot, item, goal, pilot.Position)) return pilot.Position;
-        foreach (IntVec3 cell in GenRadial.RadialCellsAround(pilot.Position, 8f, false))
+        IntVec3 best = IntVec3.Invalid;
+        float bestScore = float.NegativeInfinity;
+        foreach (IntVec3 cell in GenRadial.RadialCellsAround(pilot.Position, LaunchSearchRadius, useCenter: true))
         {
-            if (LaunchCellSafe(pilot, item, goal, cell) && pilot.CanReach(cell, PathEndMode.OnCell, Danger.Deadly)) return cell;
+            if (!IsLaunchCell(pilot, goal, cell)) continue;
+            float protection = GenSight.LineOfSight(goal, cell, map, skipFirstCell: true)
+                ? CoverUtility.CalculateOverallBlockChance(cell, goal, map)
+                : 1f;
+            float score = protection * CoverPreference - (cell - pilot.Position).LengthHorizontal;
+            if (score < bestScore || (score == bestScore && cell != previous) ||
+                !pilot.CanReach(cell, PathEndMode.OnCell, Danger.Deadly) ||
+                FriendlyInBlast(DronePayload.BlastCells(item, cell, map), pilot.Faction, pilot)) continue;
+            best = cell;
+            bestScore = score;
         }
 
-        return IntVec3.Invalid;
+        return best;
     }
 
     private bool LaunchCellSafe(Pawn pilot, ThingDef item, IntVec3 goal, IntVec3 cell) =>
-        cell.InBounds(map) && cell.Standable(map) && cell.GetEdifice(map) == null &&
-        goal.DistanceToSquared(cell) <= DroneRangeSquared &&
+        IsLaunchCell(pilot, goal, cell) &&
         !FriendlyInBlast(DronePayload.BlastCells(item, cell, map), pilot.Faction, pilot);
+
+    private bool IsLaunchCell(Pawn pilot, IntVec3 goal, IntVec3 cell) =>
+        cell.InBounds(map) && cell.Standable(map) && cell.GetEdifice(map) == null && !cell.Roofed(map) &&
+        goal.DistanceToSquared(cell) <= DroneRangeSquared &&
+        !pilots.Any(entry => entry.Pawn != pilot && entry.LaunchCell == cell);
 
     private bool FriendlyInBlast(IEnumerable<IntVec3> cells, Faction faction, Pawn ignored)
     {
@@ -303,9 +396,11 @@ public sealed class RaidDroneOperators : MapComponent
         public Pawn Pawn;
         public ThingWithComps Backup;
         public Thing Objective;
+        public IntVec3 ObjectiveCell = IntVec3.Invalid;
         public IntVec3 LaunchCell = IntVec3.Invalid;
         public IntVec3 Waypoint = IntVec3.Invalid;
         public int ArrivalDeadline;
+        public int RetryLaunchAt;
 
         public RaidPilot() { }
 
@@ -321,9 +416,11 @@ public sealed class RaidDroneOperators : MapComponent
             Scribe_References.Look(ref Pawn, "pilot");
             Scribe_References.Look(ref Backup, "backup");
             Scribe_References.Look(ref Objective, "objective");
+            Scribe_Values.Look(ref ObjectiveCell, "objectiveCell", IntVec3.Invalid);
             Scribe_Values.Look(ref LaunchCell, "launchCell", IntVec3.Invalid);
             Scribe_Values.Look(ref Waypoint, "waypoint", IntVec3.Invalid);
             Scribe_Values.Look(ref ArrivalDeadline, "arrivalDeadline");
+            Scribe_Values.Look(ref RetryLaunchAt, "retryLaunchAt");
         }
     }
 }
