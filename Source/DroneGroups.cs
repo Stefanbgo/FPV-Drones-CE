@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using RimWorld;
+using RimWorld.Planet;
 using UnityEngine;
 using Verse;
 
@@ -77,16 +78,6 @@ public sealed class DroneGroups : MapComponent
         if (visibleFlights.Count == 0) return;
 
         var ev = Event.current;
-        if (ev.type == EventType.KeyDown && ev.alt)
-        {
-            int i = System.Array.IndexOf(Keys, ev.keyCode);
-            if (i >= 0)
-            {
-                if (ev.control) Assign(i); else Recall(i);
-                ev.Use();
-            }
-        }
-
         float width = expanded ? 218f : 138f;
         float x = UI.screenWidth - width - 12f;
         const float top = 86f;
@@ -146,6 +137,29 @@ public sealed class DroneGroups : MapComponent
 
     internal static bool IsPointerInRoster(Map map, Vector2 pointer) =>
         map != null && map.GetComponent<DroneGroups>().rosterBounds.Contains(pointer);
+
+    [HarmonyPatch(typeof(UIRoot_Play), nameof(UIRoot_Play.UIRootOnGUI))]
+    private static class GroupShortcuts
+    {
+        private static void Prefix()
+        {
+            var ev = Event.current;
+            if (ev?.type != EventType.KeyDown || !ev.alt || !WorldRendererUtility.DrawingMap ||
+                Find.CurrentMap is not { } map || Find.WindowStack.AnyWindowAbsorbingAllInput || GUIUtility.keyboardControl != 0)
+                return;
+
+            int index = System.Array.IndexOf(Keys, ev.keyCode);
+            if (index < 0) return;
+
+            var groups = map.GetComponent<DroneGroups>();
+            if (!map.mapPawns.AllPawnsSpawned.Any(pawn => pawn is FlyingDrone drone && groups.Eligible(drone)))
+                return;
+
+            if (ev.control) groups.Assign(index);
+            else groups.Recall(index);
+            ev.Use();
+        }
+    }
 
     [HarmonyPatch(typeof(Selector), "SelectInsideDragBox")]
     private static class DroneBox
