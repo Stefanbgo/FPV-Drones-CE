@@ -405,7 +405,7 @@ public partial class FlyingDrone : Pawn
             if (!strikingWall && (reachedEnd || !CrossingWall && segmentTravel * 2 >= distance))
             {
                 // Resolve contact before registering the drone in the pawn's cell.
-                if (HandleAttackPawnContact(segmentTo)) break;
+                if (HandleAttackPawnContact(segmentTo, now, reachedEnd)) break;
                 ReachFreeCell(segmentTo);
             }
 
@@ -470,7 +470,7 @@ public partial class FlyingDrone : Pawn
             }
 
             if (now < nextRouteCheck ||
-                !TryFindPath(Position, waypoints[0], out List<IntVec3> route, out _, avoidDrones: true))
+                !TryFindPath(Position, waypoints[0], out List<IntVec3> route, out _, avoidDrones: true, forbidden: FinalMissObstacle()))
             {
                 routeBlocked = true;
                 if (now >= nextRouteCheck)

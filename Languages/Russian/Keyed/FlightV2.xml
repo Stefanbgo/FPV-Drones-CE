@@ -8,6 +8,7 @@
   <FPV_EndPilotLost>{0}: потеряно управление.</FPV_EndPilotLost>
   <FPV_EndWall>{0}: подрыв у выбранной стены.</FPV_EndWall>
   <FPV_EndAttack>{0}: подрыв у назначенной цели.</FPV_EndAttack>
+  <FPV_EndAttackMiss>{0}: промах, подрыв рядом с целью.</FPV_EndAttackMiss>
   <FPV_OrderUnavailable>Выбранные дроны не могут выполнить этот приказ.</FPV_OrderUnavailable>
   <FPV_AttackOrderLost>Дрон потерял назначенную цель и ждёт приказа на полёт.</FPV_AttackOrderLost>
   <FPV_UI_AttackTarget>Цель атаки: {0}</FPV_UI_AttackTarget>

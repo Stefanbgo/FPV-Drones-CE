@@ -8,6 +8,7 @@
   <FPV_EndPilotLost>{0}: lost the operator.</FPV_EndPilotLost>
   <FPV_EndWall>{0}: detonated at the selected wall.</FPV_EndWall>
   <FPV_EndAttack>{0}: detonated at its assigned target.</FPV_EndAttack>
+  <FPV_EndAttackMiss>{0}: missed and detonated nearby.</FPV_EndAttackMiss>
   <FPV_OrderUnavailable>The selected drones cannot carry out this order.</FPV_OrderUnavailable>
   <FPV_AttackOrderLost>The drone lost its assigned target and is awaiting a flight order.</FPV_AttackOrderLost>
   <FPV_UI_AttackTarget>Attack target: {0}</FPV_UI_AttackTarget>

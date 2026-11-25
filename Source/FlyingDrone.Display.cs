@@ -145,13 +145,15 @@ public sealed class DroneDisplay : MapComponent
         shadow.y = AltitudeLayer.Shadows.AltitudeFor();
         var shadowTransform = Matrix4x4.TRS(shadow, Quaternion.identity, new Vector3(0.82f, 1f, 0.74f));
         Graphics.DrawMesh(MeshPool.plane10, shadowTransform, shadowMaterial, 0);
-        centre.y += 0.035f;
+        float diveTilt = drone.FinalApproachTiltAt(tick);
+        centre.y += 0.035f + 0.08f * diveTilt;
         Quaternion bodyRotation = Quaternion.Euler(0f, drone.Rotation.AsAngle, 0f);
+        Quaternion rotorPitch = Quaternion.Euler(22f * diveTilt, 0f, 0f);
         for (int index = 0; index < RotorMounts.Length; index++)
         {
-            Vector3 hub = centre + bodyRotation * RotorMounts[index];
+            Vector3 hub = centre + bodyRotation * rotorPitch * RotorMounts[index];
             float angle = (tick % 180) * (index % 2 == 0 ? 68f : -68f) + index * 43f;
-            Quaternion rotation = bodyRotation * Quaternion.Euler(drone.IsMovingInFlight ? 12f : 0f, angle, 0f);
+            Quaternion rotation = bodyRotation * rotorPitch * Quaternion.Euler(drone.IsMovingInFlight ? 12f : 0f, angle, 0f);
             var transform = Matrix4x4.TRS(hub, rotation, new Vector3(0.28f, 1f, 0.28f));
             Graphics.DrawMesh(MeshPool.plane10, transform, rotorMaterial, 0);
         }

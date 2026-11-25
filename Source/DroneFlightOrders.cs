@@ -81,11 +81,14 @@ public partial class FlyingDrone
     public Thing AttackTarget => assignedAttackTarget;
 
     internal bool AcceptsWaypoint(IntVec3 cell) =>
-        flying && !Returning && batteryTicks > 0 && IsFreeFlightCell(cell) && IsInPilotingRange(cell) &&
+        flying && !Returning && !FinalApproachActive && batteryTicks > 0 && IsFreeFlightCell(cell) && IsInPilotingRange(cell) &&
         DroneAirspace.IsWaypointFree(this, cell);
 
     internal bool TryAssignAttack(Thing target)
     {
+        if (FinalApproachActive)
+            return target == assignedAttackTarget;
+
         if (!DroneFlightOrders.IsPlayerFlight(this) || IsScout || Returning || batteryTicks <= 0 ||
             !DroneFlightOrders.IsAttackTarget(target, Map) || !PlanAttack(target, out var approach, out var impact))
             return false;
@@ -137,21 +140,39 @@ public partial class FlyingDrone
     {
         assignedAttackTarget = null;
         attackApproach = attackImpact = observedTargetCell = IntVec3.Invalid;
+        ClearFinalApproach();
     }
 
-    private bool HandleAttackPawnContact(IntVec3 cell)
+    private bool HandleAttackPawnContact(IntVec3 cell, int now, bool reachedEnd)
     {
+        if (FinalApproachActive)
+        {
+            if (cell != finalApproachCell)
+                return false;
+
+            // Do not enter the pawn grid at mid-segment before the impact resolves.
+            if (reachedEnd)
+                FinishFinalApproach(now);
+            return true;
+        }
+
         if (assignedAttackTarget is not Pawn target ||
             !target.OccupiedRect().Contains(cell) || !DroneFlightOrders.IsAttackTarget(target, Map))
             return false;
 
         if (DroneAirspace.HasAttackTurn(this))
-            CompleteFlight(false, false, "FPV_EndAttack", cell, target);
+            TryCommitFinalApproach(target, now);
         return true;
     }
 
     private void UpdateAttackOrder(int now)
     {
+        if (FinalApproachActive)
+        {
+            UpdateFinalApproach(now);
+            return;
+        }
+
         if (assignedAttackTarget == null)
         {
             if (attackApproach.IsValid) StopAttackRoute();
@@ -164,14 +185,14 @@ public partial class FlyingDrone
             return;
         }
         if (!DroneAirspace.HasAttackTurn(this)) return;
-        if (!CrossingWall && HandleAttackPawnContact(Position)) return;
+        if (assignedAttackTarget is Pawn target && TryCommitFinalApproach(target, now)) return;
 
         CellRect occupied = assignedAttackTarget.OccupiedRect();
         bool contactStillValid = assignedAttackTarget.Position == observedTargetCell && occupied.Contains(attackImpact) &&
             (attackApproach == attackImpact || !occupied.Contains(attackApproach));
-        if (contactStillValid && !segmentTo.IsValid && Position == attackApproach)
+        if (assignedAttackTarget is Building && contactStillValid && !segmentTo.IsValid && Position == attackApproach)
         {
-            if (assignedAttackTarget is Building && attackApproach != attackImpact && IsWallTransitCell(attackImpact))
+            if (attackApproach != attackImpact && IsWallTransitCell(attackImpact))
                 EndRaidAtWall(attackImpact);
             else
                 CompleteFlight(false, false, "FPV_EndAttack", attackImpact, assignedAttackTarget);
@@ -201,5 +222,6 @@ public partial class FlyingDrone
         Scribe_Values.Look(ref attackApproach, "fpvAttackApproach", IntVec3.Invalid);
         Scribe_Values.Look(ref attackImpact, "fpvAttackImpact", IntVec3.Invalid);
         Scribe_Values.Look(ref observedTargetCell, "fpvObservedAttackCell", IntVec3.Invalid);
+        ExposeFinalApproach();
     }
 }

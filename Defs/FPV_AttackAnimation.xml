@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <AnimationDef>
+    <defName>FPV_FinalApproach</defName>
+    <durationTicks>55</durationTicks>
+    <keyframeParts>
+      <li>
+        <key>Body</key>
+        <value>
+          <keyframes>
+            <li>
+              <tick>0</tick>
+              <scale>(1, 1, 1)</scale>
+            </li>
+            <li>
+              <tick>6</tick>
+              <scale>(1, 1, 0.82)</scale>
+            </li>
+          </keyframes>
+        </value>
+      </li>
+    </keyframeParts>
+  </AnimationDef>
+</Defs>

@@ -82,7 +82,8 @@ public partial class FlyingDrone
         return true;
     }
 
-    private bool TryFindPath(IntVec3 start, IntVec3 goal, out List<IntVec3> result, out float distance, bool avoidDrones = false)
+    private bool TryFindPath(IntVec3 start, IntVec3 goal, out List<IntVec3> result, out float distance,
+        bool avoidDrones = false, CellRect? forbidden = null)
     {
         if (!IsFreeFlightCell(goal) || !IsInPilotingRange(goal))
         {
@@ -91,11 +92,11 @@ public partial class FlyingDrone
             return false;
         }
 
-        return TryFindPath(start, new[] { goal }, out _, out result, out distance, avoidDrones);
+        return TryFindPath(start, new[] { goal }, out _, out result, out distance, avoidDrones, forbidden);
     }
 
     private bool TryFindPath(IntVec3 start, IReadOnlyList<IntVec3> goals, out IntVec3 destination,
-        out List<IntVec3> result, out float distance, bool avoidDrones = false)
+        out List<IntVec3> result, out float distance, bool avoidDrones = false, CellRect? forbidden = null)
     {
         destination = IntVec3.Invalid;
         result = null;
@@ -145,7 +146,7 @@ public partial class FlyingDrone
                     neighbor += direction;
                 }
 
-                if (!CanTravelStep(entry.Cell, neighbor, wall) || occupied != null &&
+                if (forbidden?.Contains(neighbor) == true || !CanTravelStep(entry.Cell, neighbor, wall) || occupied != null &&
                     (occupied.Contains(neighbor) || wall && occupied.Contains(DroneAirspace.TransitCell(entry.Cell, neighbor))))
                 {
                     continue;

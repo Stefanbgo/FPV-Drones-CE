@@ -46,11 +46,12 @@ internal static class DroneAirspace
 
     internal static bool HasAttackTurn(FlyingDrone drone)
     {
-        if (drone.AttackTarget is not { } target) return true;
+        if (drone.FinalApproachActive || drone.AttackTarget is not { } target) return true;
         int distance = (drone.Position - target.Position).LengthHorizontalSquared;
         foreach (var other in OtherFlights(drone.Map, drone))
         {
             if (other.AttackTarget != target) continue;
+            if (other.FinalApproachActive) return false;
             int otherDistance = (other.Position - target.Position).LengthHorizontalSquared;
             if (otherDistance < distance || otherDistance == distance && other.thingIDNumber < drone.thingIDNumber)
                 return false;
