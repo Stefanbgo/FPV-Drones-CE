@@ -36,3 +36,7 @@
 ## Исходный код
 
 В `Source` находятся исходники C# и файл проекта. Сборка требует .NET SDK 10 и установленных RimWorld, Harmony и Combat Extended. Выполните `dotnet build Source/FPVDrones.csproj -c Release` из каталога мода. Для другой библиотеки Steam задайте `-p:RimWorldDir="путь к игре"` и `-p:WorkshopDir="путь к steamapps/workshop/content/294100"`. Готовая библиотека появится в `Assemblies`.
+
+## Иконки дронов
+
+Иконки перерисованы по фотореференсам и распространяются по лицензии [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). [Clicklabs — FPV Quadrocopter](https://commons.wikimedia.org/wiki/File:FPV_Quadrocopter.jpg) · [SimonWaldherr — DJI Mavic 2 Pro](https://commons.wikimedia.org/wiki/File:DJI_Mavic_2_Pro.jpg)

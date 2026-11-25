@@ -139,6 +139,17 @@ public partial class FlyingDrone
         attackApproach = attackImpact = observedTargetCell = IntVec3.Invalid;
     }
 
+    private bool HandleAttackPawnContact(IntVec3 cell)
+    {
+        if (assignedAttackTarget is not Pawn target ||
+            !target.OccupiedRect().Contains(cell) || !DroneFlightOrders.IsAttackTarget(target, Map))
+            return false;
+
+        if (DroneAirspace.HasAttackTurn(this))
+            CompleteFlight(false, false, "FPV_EndAttack", cell, target);
+        return true;
+    }
+
     private void UpdateAttackOrder(int now)
     {
         if (assignedAttackTarget == null)
@@ -153,6 +164,7 @@ public partial class FlyingDrone
             return;
         }
         if (!DroneAirspace.HasAttackTurn(this)) return;
+        if (!CrossingWall && HandleAttackPawnContact(Position)) return;
 
         CellRect occupied = assignedAttackTarget.OccupiedRect();
         bool contactStillValid = assignedAttackTarget.Position == observedTargetCell && occupied.Contains(attackImpact) &&

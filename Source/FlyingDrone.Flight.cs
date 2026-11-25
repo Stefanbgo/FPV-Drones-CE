@@ -45,7 +45,7 @@ public partial class FlyingDrone : Pawn
     public bool FlightActive => flying;
 
     private int MaximumBatteryTicks => (IsScout ? 80 : 30) * TicksPerSecond;
-    private float CellDistancePerTick => (IsScout ? 4f : 6f) / TicksPerSecond;
+    private float CellDistancePerTick => (IsScout ? 4f : 7f) / TicksPerSecond;
 
     public override Vector3 DrawPos
     {
@@ -262,6 +262,7 @@ public partial class FlyingDrone : Pawn
         }
 
         flying = false;
+        StopRotorSound();
         Map map = Map;
         IntVec3 cell = impactCell ?? (LastFree.IsValid ? LastFree : Position);
         bool showReason = Faction == Faction.OfPlayer || !cell.Fogged(map);
@@ -332,10 +333,15 @@ public partial class FlyingDrone : Pawn
             return;
         }
 
-        if (restoreAirspace && !RestoreAirspace()) return;
+        if (restoreAirspace && !RestoreAirspace())
+        {
+            UpdateRotorSound(0f);
+            return;
+        }
+
         UpdateAttackOrder(now);
         if (!flying) return;
-        AdvanceFlight(now);
+        UpdateRotorSound(AdvanceFlight(now));
         DroneCombatResponse.ApplyNearbySuppression(this);
         if (flying && IsScout && !Returning)
         {
@@ -366,9 +372,10 @@ public partial class FlyingDrone : Pawn
         }
     }
 
-    private void AdvanceFlight(int now)
+    private float AdvanceFlight(int now)
     {
-        float budget = CellDistancePerTick;
+        float movementBudget = CellDistancePerTick;
+        float budget = movementBudget;
         while (budget > MovementEpsilon && flying)
         {
             if (segmentTo.IsValid && (strikingWall ? !IsWallTransitCell(segmentTo) : !CanTravelStep(segmentFrom, segmentTo, CrossingWall)))
@@ -380,7 +387,7 @@ public partial class FlyingDrone : Pawn
 
             if (!segmentTo.IsValid && !BeginNextStep(now))
             {
-                return;
+                break;
             }
 
             float distance = Distance(segmentFrom, segmentTo);
@@ -388,19 +395,22 @@ public partial class FlyingDrone : Pawn
             segmentTravel += usedDistance;
             budget -= usedDistance;
 
-            if (!strikingWall && !CrossingWall && segmentTravel * 2 >= distance)
+            bool reachedEnd = segmentTravel + MovementEpsilon >= distance;
+            if (strikingWall && reachedEnd)
             {
+                CompleteFlight(false, false, "FPV_EndWall", segmentTo, AttackTarget);
+                break;
+            }
+
+            if (!strikingWall && (reachedEnd || !CrossingWall && segmentTravel * 2 >= distance))
+            {
+                // Resolve contact before registering the drone in the pawn's cell.
+                if (HandleAttackPawnContact(segmentTo)) break;
                 ReachFreeCell(segmentTo);
             }
 
-            if (segmentTravel + MovementEpsilon >= distance)
+            if (reachedEnd)
             {
-                if (strikingWall)
-                {
-                    CompleteFlight(false, false, "FPV_EndWall", segmentTo, AttackTarget);
-                    return;
-                }
-                ReachFreeCell(segmentTo);
                 ClearSegment();
                 if (reacquirePending && Returning)
                 {
@@ -408,6 +418,8 @@ public partial class FlyingDrone : Pawn
                 }
             }
         }
+
+        return movementBudget - budget;
     }
 
     private void ReachFreeCell(IntVec3 cell)

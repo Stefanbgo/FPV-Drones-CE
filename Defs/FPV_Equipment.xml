@@ -19,7 +19,7 @@
     <label>FPV kamikaze</label>
     <description>Single-use radio FPV with the Combat Extended fragmentation effect. Equip an FPV controller in the primary slot to launch. A full battery lasts 30 seconds and the control radius is 100 cells. The drone detonates when its flight ends. A hostile jammer ends the flight early.</description>
     <graphicData>
-      <texPath>FPVDrones/Kamikaze</texPath>
+      <texPath>FPVDrones/Icons/Fragmentation</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(0.86,0.86)</drawSize>
     </graphicData>
@@ -31,7 +31,7 @@
     <label>Mavik scout drone</label>
     <description>Reusable radio scout. Equip an FPV controller in the primary slot to launch. A full battery lasts 80 seconds and the control radius is 120 cells. Choose return or land to recover and recharge it at an FPV charging station. A hostile jammer forces a recoverable landing.</description>
     <graphicData>
-      <texPath>FPVDrones/Scout</texPath>
+      <texPath>FPVDrones/Icons/Mavik</texPath>
       <graphicClass>Graphic_Single</graphicClass>
       <drawSize>(0.86,0.86)</drawSize>
     </graphicData>

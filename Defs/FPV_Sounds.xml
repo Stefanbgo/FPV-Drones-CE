@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <SoundDef>
+    <defName>FPV_StrikeRotor</defName>
+    <context>MapOnly</context>
+    <sustain>true</sustain>
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainFadeoutTime>0.08</sustainFadeoutTime>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>FPVDrones/StrikeRotor</clipPath>
+          </li>
+        </grains>
+        <volumeRange>24</volumeRange>
+        <distRange>8~32</distRange>
+        <muteWhenPaused>true</muteWhenPaused>
+        <sustainAttack>0.06</sustainAttack>
+        <sustainSkipFirstAttack>false</sustainSkipFirstAttack>
+      </li>
+    </subSounds>
+  </SoundDef>
+  <SoundDef>
+    <defName>FPV_ScoutRotor</defName>
+    <context>MapOnly</context>
+    <sustain>true</sustain>
+    <priorityMode>PrioritizeNearest</priorityMode>
+    <sustainFadeoutTime>0.08</sustainFadeoutTime>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>FPVDrones/ScoutRotor</clipPath>
+          </li>
+        </grains>
+        <volumeRange>26</volumeRange>
+        <distRange>8~32</distRange>
+        <muteWhenPaused>true</muteWhenPaused>
+        <sustainAttack>0.06</sustainAttack>
+        <sustainSkipFirstAttack>false</sustainSkipFirstAttack>
+      </li>
+    </subSounds>
+  </SoundDef>
+</Defs>
