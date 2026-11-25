@@ -388,19 +388,22 @@ public partial class FlyingDrone : Pawn
             segmentTravel += usedDistance;
             budget -= usedDistance;
 
-            if (!strikingWall && !CrossingWall && segmentTravel * 2 >= distance)
+            bool reachedEnd = segmentTravel + MovementEpsilon >= distance;
+            if (strikingWall && reachedEnd)
             {
+                CompleteFlight(false, false, "FPV_EndWall", segmentTo, AttackTarget);
+                return;
+            }
+
+            if (!strikingWall && (reachedEnd || !CrossingWall && segmentTravel * 2 >= distance))
+            {
+                // Resolve contact before registering the drone in the pawn's cell.
+                if (HandleAttackPawnContact(segmentTo)) return;
                 ReachFreeCell(segmentTo);
             }
 
-            if (segmentTravel + MovementEpsilon >= distance)
+            if (reachedEnd)
             {
-                if (strikingWall)
-                {
-                    CompleteFlight(false, false, "FPV_EndWall", segmentTo, AttackTarget);
-                    return;
-                }
-                ReachFreeCell(segmentTo);
                 ClearSegment();
                 if (reacquirePending && Returning)
                 {

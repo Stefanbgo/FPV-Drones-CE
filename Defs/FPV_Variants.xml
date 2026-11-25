@@ -83,6 +83,7 @@
   <PawnKindDef Name="FPV_StrikeVariantKind" Abstract="True">
     <combatPower>20</combatPower>
     <canStrip>false</canStrip>
+    <collidesWithPawns>false</collidesWithPawns>
   </PawnKindDef>
 
   <PawnKindDef ParentName="FPV_StrikeVariantKind">
